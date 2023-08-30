@@ -14,21 +14,26 @@ void printarray(int x[], int n)
 
 bool iscliming(int x[], int n)
 {
-    n -= 1;
-    if(n <= 1)
+    if(n == 0)
     {
         return true;
     }
     else
     {
-        
-        std::cout << x[n]-1 << ' ' << x[n-1] << std::endl;
-        if(x[n] != x[n-1] || x[n] - 1 != x[n-1])
+        std::cout << x[n] << ' ' << x[n-1] << std::endl;
+        if(x[n] == x[n-1])
         {
-            std::cout << x[n] << " is not equal to " << x[n-1] << " or one number less\n";
             iscliming(x, n-1);
         }
-        return false;
+        else if(x[n]-1 == x[n-1])
+        {
+            iscliming(x, n-1);
+        }
+        else
+        {
+            std::cout << "returning false\n";
+            return false;
+        }
     }
 }
 
@@ -44,7 +49,7 @@ int main()
 
     printarray(x, n);
 
-    std::cout << iscliming(x, n) << std::endl;
+    std::cout << iscliming(x, n-1) << std::endl;
 
     return 0;
 }

@@ -2,7 +2,7 @@
 #include <ctime>
 #include <cstdlib>
 const int SIZE = 20;
-const char C[] = {'1', '2', '3', '4', '5'};
+const char C[] = {'a', 'b', 'c', 'd', 'e'};
 //=============================================================================
 // Fill 2D array m with characters chosen randomly from C.
 //=============================================================================

@@ -20,7 +20,7 @@ bool iscliming(int x[], int n)
     }
     else
     {
-        std::cout << x[n] << ' ' << x[n-1] << std::endl;
+        //std::cout << x[n] << ' ' << x[n-1] << std::endl;
         if(x[n] == x[n-1])
         {
             iscliming(x, n-1);
@@ -31,7 +31,7 @@ bool iscliming(int x[], int n)
         }
         else
         {
-            std::cout << "returning false\n";
+            //std::cout << "returning false\n";
             return false;
         }
     }

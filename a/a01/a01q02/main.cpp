@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <stdlib.h>
 #include <string>
+
 const int SIZE = 20;
 const char C[] = {'a', 'b', 'c', 'd', 'e'};
 

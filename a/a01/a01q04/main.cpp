@@ -79,7 +79,7 @@ int main()
             break;
         case 6:
             std::cout << "case 6\n";
-            std::cout << (z0 * x1) << std::endl;
+            std::cout << (z0 * x1) << std::endl; 
             break;
         case 7:
             std::cout << "case 7\n";

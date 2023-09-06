@@ -17,7 +17,18 @@ void randarray(char m[SIZE][SIZE], int r, int C)
         }
     }
 }
-
+void fillarray(char m[SIZE][SIZE], int r, int c)
+{
+    int temp;
+    for(int i = 0; i < r; ++i)
+    {
+        for(int j = 0; j < c; ++j)
+        {
+            std::cin >> temp;
+            m[i][j] = temp;
+        }
+    }
+}
 //=============================================================================
 // Print 2D array.
 //=============================================================================
@@ -40,37 +51,69 @@ struct subarray
     int x_ = 0;
     int y_ = 0; 
     int rows_ = 0;
-    int coloms_ = 0;
+    int columns_ = 0;
+    int maxsum_ = 0;
 };
 
-subarray fixmax(char m[SIZE][SIZE], int r, int c)
+subarray findmax(char m[SIZE][SIZE], int r, int c)
 {
-    int max_sum = int(m[0][0]);
     subarray max_sub;
-    std::cout << max_sum << std::endl;    
+    max_sub.maxsum_ = int(m[0][0]);
+    //std::cout << max_sum << std::endl;    
 
-    for(int i = 0; i < r; ++i)
+    for(int location_y = 0; location_y < r; ++location_y)
     {
-        
+        for(int location_x = 0; location_x < c; ++location_x)
+        {    
+            for(int rowsCounted = r-location_y; rowsCounted > 0; --rowsCounted)
+            {
+                for(int columnsCounted = c-location_x; columnsCounted > 0; --columnsCounted)
+                {
+                    int sum = 0;
+                    for(int i = 0; i < rowsCounted; ++i)
+                    {
+                        for(int j = 0; j < columnsCounted; ++j)
+                        {
+                            sum +=m[i][j];
+                        }
+                        if(sum > max_sub.maxsum_)
+                        {
+                            max_sub.maxsum_ = sum;
+                            max_sub.x_=location_x;
+                            max_sub.y_=location_y;
+                            max_sub.rows_ = rowsCounted;
+                            max_sub.columns_ = columnsCounted;
+                        }
+                    }
+                    std::cout << location_x << ' ' 
+                              << location_y << ' ' 
+                              << rowsCounted << ' '
+                              << columnsCounted << ' '
+                              << "sum: " <<sum << std::endl; 
+                }        
+            }
+        }
     }
-
+    std::cout << "\n\n\n";
     return max_sub;
 }
 
 std::ostream & operator<<(std::ostream & cout, const subarray & z)
 {
-    cout << z.x_ << ' ' << z.y_ << ' ' << z.rows_ << ' ' << z.coloms_;
+    cout << z.x_ << ' ' << z.y_ << ' ' << z.rows_ << ' ' << z.columns_ << " max sum:" << z.maxsum_;
     return cout;
 }
 
 int main()
 {
-    int seed, r, c;
-    std::cin >> seed >> r >> c;
-    srand(seed);
+    int r, c;
+    
+    std::cin >> r >> c;
+    // srand(seed);
     char m[SIZE][SIZE];
-    randarray(m, r, c);
+    // randarray(m, r, c);
+    fillarray(m, r, c);
     printarray(m, r, c);
-    std::cout << '\n' << fixmax(m, r, c) << std::endl;
+    std::cout << '\n' << findmax(m, r, c) << std::endl;
     return 0;
 }

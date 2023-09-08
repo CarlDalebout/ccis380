@@ -90,7 +90,6 @@ subarray findmax(char m[SIZE][SIZE], int r, int c)
                               << rowsCounted << ' '
                               << columnsCounted << ' '
                               << "sum: " <<sum << std::endl; 
-                    
                 }        
             }
         }
@@ -101,14 +100,16 @@ subarray findmax(char m[SIZE][SIZE], int r, int c)
 
 std::ostream & operator<<(std::ostream & cout, const subarray & z)
 {
-    cout << z.x_ << ' ' << z.y_ << ' ' << z.rows_ << ' ' << z.columns_ << " max sum:" << z.maxsum_;
+    cout << z.maxsum_ << ' ' << z.x_ << ' ' << z.y_ << ' ' << z.rows_ << ' ' << z.columns_;
     return cout;
 }
 
 int main()
 {
+    int seed;
     int r, c;
     
+    // std::cin >> seed; 
     std::cin >> r >> c;
     // srand(seed);
     char m[SIZE][SIZE];

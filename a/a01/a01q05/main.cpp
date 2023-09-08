@@ -74,22 +74,19 @@ subarray findmax(char m[SIZE][SIZE], int r, int c)
                     {
                         for(int j = 0; j < columnsCounted; ++j)
                         {
-                            sum +=m[i][j];
+                            // std::cout << "sum += " << int(m[i + location_y][j + location_x]) << "| x:" << i << " y:" << j << '\t';
+                            sum += int(m[i + location_y][j + location_x]);
                         }
-                        if(sum > max_sub.maxsum_)
-                        {
-                            max_sub.maxsum_ = sum;
-                            max_sub.x_=location_x;
-                            max_sub.y_=location_y;
-                            max_sub.rows_ = rowsCounted;
-                            max_sub.columns_ = columnsCounted;
-                        }
+                    }   
+                    if(sum > max_sub.maxsum_)
+                    {
+                        max_sub.maxsum_ = sum;
+                        max_sub.x_=location_x;
+                        max_sub.y_=location_y;
+                        max_sub.rows_ = rowsCounted;
+                        max_sub.columns_ = columnsCounted;
                     }
-                    std::cout << location_x << ' ' 
-                              << location_y << ' ' 
-                              << rowsCounted << ' '
-                              << columnsCounted << ' '
-                              << "sum: " <<sum << std::endl; 
+                    // std::cout << '\n'  << location_x << ' ' << location_y << ' ' << rowsCounted << ' ' << columnsCounted << ' ' << "sum: " <<sum << std::endl << std::endl;              
                 }        
             }
         }
@@ -100,20 +97,22 @@ subarray findmax(char m[SIZE][SIZE], int r, int c)
 
 std::ostream & operator<<(std::ostream & cout, const subarray & z)
 {
-    cout << z.x_ << ' ' << z.y_ << ' ' << z.rows_ << ' ' << z.columns_ << " max sum:" << z.maxsum_;
+    cout << z.maxsum_ << ' ' << z.x_ << ' ' << z.y_ << ' ' << z.rows_ << ' ' << z.columns_;
     return cout;
 }
 
 int main()
 {
+    int seed;
     int r, c;
     
+    // std::cin >> seed; 
     std::cin >> r >> c;
     // srand(seed);
     char m[SIZE][SIZE];
     // randarray(m, r, c);
     fillarray(m, r, c);
-    printarray(m, r, c);
+    // printarray(m, r, c);
     std::cout << '\n' << findmax(m, r, c) << std::endl;
     return 0;
 }

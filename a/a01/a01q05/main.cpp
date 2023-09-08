@@ -90,6 +90,7 @@ subarray findmax(char m[SIZE][SIZE], int r, int c)
                               << rowsCounted << ' '
                               << columnsCounted << ' '
                               << "sum: " <<sum << std::endl; 
+                    
                 }        
             }
         }
@@ -113,7 +114,7 @@ int main()
     char m[SIZE][SIZE];
     // randarray(m, r, c);
     fillarray(m, r, c);
-    printarray(m, r, c);
+    // printarray(m, r, c);
     std::cout << '\n' << findmax(m, r, c) << std::endl;
     return 0;
 }

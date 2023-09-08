@@ -1,11 +1,14 @@
 #include <GL/freeglut.h>
 void display()
-{}
+{
+glClear(GL_COLOR_BUFFER_BIT);
+glFlush();
+}
 int main(int argc, char ** argv)
 {
 glutInit(&argc, argv);
-glutInitWindowPosition(100, 100);
-glutInitWindowSize(200, 200);
+glutInitWindowPosition(300, 100);
+glutInitWindowSize(400, 400);
 glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA);
 glutCreateWindow("OpenGL!!!");
 glutDisplayFunc(display);

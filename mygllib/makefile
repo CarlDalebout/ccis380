@@ -1,5 +1,5 @@
 #------------------------------------------------------------------------------
-# Makefile for object code in mygllib
+# Makefile for main.exe
 # Y. Liow
 #------------------------------------------------------------------------------
 # Macros
@@ -8,25 +8,34 @@ CXX 		= g++
 CXXFLAGS 	= -g -Wall
 LINK 		= g++
 LINKFLAGS 	= -lGL -lGLU -lglut -lGLEW
-OBJS 		= config.o View.o Reshape.o SingletonView.o Keyboard.o
+OBJS 		= ../mygllib/config.o \
+		  	  ../mygllib/View.o \
+		  	  main.o
+EXE 		= main.exe
 
 #------------------------------------------------------------------------------
-# Build all object code
+# Executable
 #------------------------------------------------------------------------------
-all:	$(OBJS)
-	$(NOOP)
+$(EXE): 	$(OBJS)
+	$(LINK) $(OBJS) -o $(EXE) $(LINKFLAGS)
 
 #------------------------------------------------------------------------------
-# Object codes
+# Object files
 #------------------------------------------------------------------------------
-config.o: config.h config.cpp
-	$(CXX) $(CXXFLAGS) config.cpp -c -o config.o
-View.o: View.h View.cpp
-	$(CXX) $(CXXFLAGS) View.cpp -c -o View.o
+main.o: main.cpp gl2d.h
+	$(CXX) $(CXXFLAGS) main.cpp -c -o main.o -I ../mygllib/
+config.o: config.cpp config.h
+	$(CXX) $(CXXFLAGS) config.cpp -c -o config.o -I ../mygllib/
+View.o: View.cpp View.h
+	$(CXX) $(CXXFLAGS) View.clean -c -o View.o -I ../mygllib
 #------------------------------------------------------------------------------
 # Utilities
 #------------------------------------------------------------------------------
 clean:
-	rm -f $(OBJS)
+	rm -f $(EXE) main.o 
 c:
-	rm -f $(OBJS)
+	rm -f $(EXE) main.o 
+run:
+	./$(EXE)
+r:
+	./$(EXE)

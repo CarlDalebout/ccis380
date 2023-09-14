@@ -10,13 +10,26 @@ struct point
     float y = 0;
 };
 
-std::vector<point>points{{0, 0}, {100, 200}, {200, 0}, 
-                         {100, 200}, {200, 400}, {300, 200},
-                         {200, 0}, {300, 200}, {400, 0}};
+std::vector<point>points{{0, 0}, {200, 400}, {400, 0}};
 
 void addPoints()
 {
-    //ahhhhhhhhhhhhhhhhh
+    unsigned int i = 0;
+    while(i < points.size())
+    {
+        point ab = {(points[i].x + points[i+1].x)/2, (points[i].y + points[i+1].y)/2}; 
+        point ac = {(points[i].x + points[i+2].x)/2, (points[i].y + points[i+2].y)/2};
+        point bc = {(points[i+1].x + points[i+2].x)/2, (points[i+1].y + points[i+2].y)/2};
+        points.insert(points.begin() + i + 1, ab); //i is still pointing at a
+        points.insert(points.begin() + i + 2, ac); 
+        i += 3;// i is pointing to b
+        points.insert(points.begin() + i + 1, ab); //i is still pointing at b
+        points.insert(points.begin() + i + 2, bc);
+        i += 3;
+        points.insert(points.begin() + i + 1, ac); //i is still pointing at c
+        points.insert(points.begin() + i + 2, bc);
+        i += 3;        
+    }
 }
 
 void drawtriangle()
@@ -32,7 +45,11 @@ void display()
 {
     glClear(GL_COLOR_BUFFER_BIT);
     glBegin(GL_TRIANGLES);
-    addPoints();
+    if(level < 7)
+    {
+        level++;
+        addPoints();
+    }
     drawtriangle();
     // drawtriangle(0, 0, 0.5, 1);
     // drawtriangle(400, 0, 0.5, 1);
@@ -46,7 +63,11 @@ void keyboard(unsigned char key, int x, int y)
     switch (key)
     {
     case ' ':
-        addPoints();
+        if(level < 7)
+        {
+            level++;
+            addPoints();
+        }
         break;
     
     default:

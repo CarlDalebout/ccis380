@@ -11,15 +11,15 @@
 namespace mygllib
 {
     using namespace mygllib;
-    
+
     inline
-    void init2d_base(unsigned int display_mode)
+    void init2d_base(unsigned int display_mode, int w = WIN_W, int h = WIN_H)
     {
         int argc = 0;
         char ** argv = NULL;
         glutInit(&argc, argv);
         glutInitWindowPosition(WIN_X, WIN_Y);
-        glutInitWindowSize(WIN_W, WIN_H);
+        glutInitWindowSize(w, h);
         glutInitDisplayMode(display_mode);
         glutCreateWindow(WIN_TITLE);
         glClearColor(CLEAR_COLOR_R, CLEAR_COLOR_G, CLEAR_COLOR_B,
@@ -34,6 +34,12 @@ namespace mygllib
     void init2d()
     {
         init2d_base(GLUT_SINGLE | GLUT_RGBA);
+    }
+
+    inline
+    void init2d(int w, int h)
+    {
+        init2d_base((GLUT_SINGLE | GLUT_RGBA), w, h);
     }
     
     inline

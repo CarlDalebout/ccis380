@@ -58,9 +58,9 @@ void display()
     glClear(GL_COLOR_BUFFER_BIT);
     glBegin(GL_TRIANGLES);
 
-    drawtriangle(200, 400, 0.5);
-    drawtriangle(0, 0, 0.5);
-    drawtriangle(400, 0, 0.5);
+    drawtriangle(200, 400, 0.5, 1);
+    drawtriangle(0, 0, 0.5, 1);
+    drawtriangle(400, 0, 0.5, 1);
 
     glEnd();
     glFlush();

@@ -24,6 +24,7 @@ public:
     complex operator-(const complex & z);
     complex operator*(const complex & z);
     complex operator/(const complex & z) const;
+    complex pow2();
     double abs() const;
 
 private:

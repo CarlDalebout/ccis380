@@ -10,7 +10,8 @@ LINK 		= g++
 LINKFLAGS 	= -lGL -lGLU -lglut -lGLEW
 OBJS 		= ../../mygllib/config.o \
 			../../mygllib/View.o \
-			main.o
+			main.o \
+			complex.o
 EXE 		= main.exe
 #------------------------------------------------------------------------------
 # Executable
@@ -28,9 +29,9 @@ complex.o: complex.h complex.cpp
 # Utilities
 #------------------------------------------------------------------------------
 clean:
-	rm -f $(EXE) main.o complex.o
+	rm -f $(EXE) main.o 
 c:
-	rm -f $(EXE) main.o complex.o
+	rm -f $(EXE) main.o 
 run:
 	./$(EXE)
 r:

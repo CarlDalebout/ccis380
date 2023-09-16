@@ -59,6 +59,11 @@ complex complex::operator/(const complex & z) const
     complex temp2(z.re(), -z.im());
     return complex(temp1 * temp2);
 }   
+complex complex::pow2()
+{
+    re_ = (re_ * re_) - (im_ * im_);
+    im_ = im_ * im_;
+}
 double complex::abs() const
 {
     return sqrt(pow(re_, 2) + pow(im_, 2));
@@ -95,7 +100,7 @@ std::istream & operator>>(std::istream & cin, complex & z)
     z = temp;
     return cin;
 }
-std::ostream & operator<<(std::ostream & cout, const complex & z)
+std::ostream & operator<<(std::ostream & cout, complex const & z)
 {
     if(z.im() >= 0)
         cout << z.re()  << " + " << z.im() << 'i';

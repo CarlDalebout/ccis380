@@ -6,7 +6,7 @@ void display()
     // Clears the screen
     glClear(GL_COLOR_BUFFER_BIT);
 
-    // Set drawing color to black
+    // Set drawing color to Red
     glColor3f(1.0f, 0.0f, 0.0f);
 
     // Draw points

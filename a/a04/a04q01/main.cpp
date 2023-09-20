@@ -59,7 +59,6 @@ void filled_arc(float x, float y, float r, int num_points,
                    float end_angle = 2 * 3.14159)
 {
     glBegin(GL_POLYGON);
-
     glVertex2f(r*cos(start_angle)+x, r*sin(start_angle)+y);
     for(float i = start_angle; i <= end_angle+(end_angle/num_points); i += end_angle/num_points)
     {

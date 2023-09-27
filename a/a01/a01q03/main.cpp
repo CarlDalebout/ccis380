@@ -47,7 +47,7 @@ int main()
         std::cin >> x[i];
     }
 
-    printarray(x, n);
+    // printarray(x, n);
 
     std::cout << iscliming(x, n-1) << std::endl;
 

@@ -74,7 +74,7 @@ subarray findmax(char m[SIZE][SIZE], int r, int c)
                     {
                         for(int j = 0; j < columnsCounted; ++j)
                         {
-                            sum +=m[i][j];
+                            sum +=m[location_x + i][location_y + j];
                         }
                         if(sum > max_sub.maxsum_)
                         {
@@ -85,11 +85,11 @@ subarray findmax(char m[SIZE][SIZE], int r, int c)
                             max_sub.columns_ = columnsCounted;
                         }
                     }
-                    std::cout << location_x << ' ' 
-                              << location_y << ' ' 
-                              << rowsCounted << ' '
-                              << columnsCounted << ' '
-                              << "sum: " <<sum << std::endl; 
+                    // // std::cout << location_x << ' ' 
+                    //           << location_y << ' ' 
+                    //           << rowsCounted << ' '
+                    //           << columnsCounted << ' '
+                    //           << "sum: " <<sum << std::endl; 
                 }        
             }
         }
@@ -109,13 +109,13 @@ int main()
     int seed;
     int r, c;
     
-    // std::cin >> seed; 
+    //std::cin >> seed; 
     std::cin >> r >> c;
     // srand(seed);
     char m[SIZE][SIZE];
     // randarray(m, r, c);
     fillarray(m, r, c);
-    // printarray(m, r, c);
+    printarray(m, r, c);
     std::cout << '\n' << findmax(m, r, c) << std::endl;
     return 0;
 }

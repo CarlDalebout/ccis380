@@ -16,10 +16,10 @@ public:
     double re() const;
     double im() const;
 
-    complex & operator+=(const complex & z);
-    complex & operator-=(const complex & z);
-    complex & operator*=(const complex & z);
-    complex & operator/=(const complex & z);
+    const complex & operator+=(const complex & z);
+    const complex & operator-=(const complex & z);
+    const complex & operator*=(const complex & z);
+    const complex & operator/=(const complex & z);
     complex operator+(const complex & z) const;
     complex operator-(const complex & z);
     complex operator*(const complex & z);

@@ -10,28 +10,28 @@ double complex::im() const
     return im_;
 }
 
-complex & complex::operator+=(const complex & z)
+const complex & complex::operator+=(const complex & z)
 {
     complex temp0 = *this;
     complex temp1 = z;
     *this = temp0 + temp1;
     return *this;
 }   
-complex & complex::operator-=(const complex & z)
+const complex & complex::operator-=(const complex & z)
 {
     complex temp0 = *this;
     complex temp1 = z;
     *this = temp0 - temp1;
     return *this;
 }
-complex & complex::operator*=(const complex & z)
+const complex & complex::operator*=(const complex & z)
 {  
     complex temp0 = *this;
     complex temp1 = z;
     *this = temp0 * temp1;
     return *this;
 }
-complex & complex::operator/=(const complex & z)
+const complex & complex::operator/=(const complex & z)
 {
     complex temp0 = *this;
     complex temp1 = z;

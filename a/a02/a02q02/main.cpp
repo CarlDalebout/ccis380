@@ -59,9 +59,6 @@ int MandleSet()
     return 0;
 }
 
-
-
-
 void display()
 {
     // glClear(GL_COLOR_BUFFER_BIT);

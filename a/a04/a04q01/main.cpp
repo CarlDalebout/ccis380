@@ -5,11 +5,16 @@
 #include "../mygllib/gl2d.h"
 
 
+const float PI = 3.14159;
+
 float cx = 200.0f;
-float cy = 198.0f;
-float rx = 50.0f;
-float ry = 50.0f;
-float dt = 0.1f;
+float cy = 202.0f;
+float rs = 0.0;
+float re = 2 * PI;
+float rx = 20.0f;
+float ry = 100.0f;
+float dt = 1.0f;
+float da = PI / 180.0 / 2.0;
 
 struct point
 {
@@ -17,6 +22,26 @@ struct point
     float y;
 };
 
+void print_grid()
+{
+
+    glColor3f(0, 0, 0);
+    float dr = mygllib::WIN_W / 20;
+    for(int i = 1; i <= 20; ++i)
+    {
+        glBegin(GL_LINES);
+        glVertex2f(i * dr, 0);
+        glVertex2f(i * dr, mygllib::WIN_H);
+        glEnd();
+    }
+    for(int i = 1; i <= 20; ++i)
+    {
+        glBegin(GL_LINES);
+        glVertex2f(0, i * dr);
+        glVertex2f(mygllib::WIN_W , i * dr);
+        glEnd();
+    }
+}
 
 void regular_polygon(float x, float y, float r, int num_points)
 {
@@ -54,16 +79,39 @@ void arc(float x, float y, float r, int num_points, float line_width,
     glEnd();
 }
 
-void filled_arc(float x, float y, float r, int num_points,
+void filled_arc(float cx, float cy, float r, int num_points,
                    float start_angle = 0.0f,
                    float end_angle = 2 * 3.14159)
 {
-    glBegin(GL_POLYGON);
-    glVertex2f(r*cos(start_angle)+x, r*sin(start_angle)+y);
-    for(float i = start_angle; i <= end_angle+(end_angle/num_points); i += end_angle/num_points)
-    {
-        glVertex2f(r*cos(i)+x, r*sin(i)+y);
-    }    
+    float theta = end_angle / float(num_points-1);
+    float c = cosf(theta);
+    float t = tanf(theta); 
+
+    float x = r * cosf(start_angle);//we start at angle = 0 
+    float y = r * sinf(start_angle); 
+
+    glBegin(GL_POLYGON); 
+    for(int i = 0; i < num_points; i++) 
+    { 
+        //apply radius and offset
+        glVertex2f(x + cx, y + cy);//output vertex 
+
+        float tx = -y;
+        float ty =  x;
+
+        x += tx * t;
+        y += ty * t;
+
+        x *= c;
+        y *= c;
+
+    } 
+    // glBegin(GL_POLYGON);
+    // glVertex2f(r*cos(start_angle)+x, r*sin(start_angle)+y);
+    // for(float i = start_angle; i <= end_angle+(end_angle/num_points); i += end_angle/num_points)
+    // {
+    //     glVertex2f(r*cos(i)+x, r*sin(i)+y);
+    // }    
     glEnd();
 }
 
@@ -155,46 +203,130 @@ void fixedstar(float x, float y, float r, int num_points = 5)
     glEnd();
 }
 
-void draw_red_bird(float x, float y, float r, int eye, int mouth)
+void draw_red_bird(float x = 200, float y = 200 , float r = 100, int eye = 0, int mouth = 0)
 {
-    // glBegin();
+
+    //feathers
+    glColor3f(0, 0, 0);
+    triangle({x + (r * -1.1f), y + (r * 0.45f)}, 
+             {x + (r * -1.2f), y + (r * 0.28f)}, 
+             {x + (r * -0.55f), y + (r * 0.1f)});
+    triangle({x + (r * -1.5f), y + (r * 0.32f)}, 
+             {x + (r * -1.58f) , y}, 
+             {x + (r * -0.5f) , y});
+    triangle({x + (r * -1.3f), y + (r * -0.05f)}, 
+             {x + (r * -1.25f), y + (r * -0.35f)}, 
+             {x + (r * -0.72f), y + (r * -0.05f)});
+    glEnd();
+
+    //main body
+    glColor3f(0, 0, 0); // black
+    Filled_Ellipse(x, y, r, r, 50);
+    glColor3f(0.8, 0, 0); // red
+    Filled_Ellipse(x, y, r * 0.96, r * 0.96, 50);
+    
+    //belly
+    glColor3f(0.94, 0.90, 0.55); // tan
+    filled_arc(x, y + (r * -1.35f), r, 30, 0.7678, 1.6054);
+    filled_arc(x, y + (r * 0.043f), r, 30, 3.9088, 1.6054);
+    
+    //eyes 0 aka open
+    if(eye == 0)
+    {
+        glColor3f(0, 0, 0);// black
+        Filled_Ellipse(x, y + (r * 0.1f), r * 0.2f, r * 0.2f, 30);
+        Filled_Ellipse(x + (r * 0.4f), y + (r * 0.1f), r * 0.2f, r * 0.2f, 30);
+    
+        glColor3f(1, 1, 1); // white
+        Filled_Ellipse(x, y + (r * 0.1f), r * 0.17f, r * 0.17f, 30);
+        Filled_Ellipse(x + (r * 0.4f), y + (r * 0.1f), r * 0.17f, r * 0.17f, 30);
+    
+        glColor3f(0, 0, 0); // black
+        Filled_Ellipse(x + (r * 0.08f), y + (r * 0.1f), r * 0.05f, r * 0.05f, 30);
+        Filled_Ellipse(x + (r * 0.32f), y + (r * 0.1f), r * 0.05f, r * 0.05f, 30);
+    }
+    else
+    {
+        glColor3f(0, 0, 0);// black
+        Filled_Ellipse(x, y + (r * 0.1f), r * 0.2f, r * 0.2f, 30);
+        Filled_Ellipse(x + (r * 0.4f), y + (r * 0.1f), r * 0.2f, r * 0.2f, 30);
+
+        // glColor3f(0, 0, 1);
+        glColor3f(0.8f, 0, 0);// eye lids
+        filled_arc(x, y + (r * 0.11f), (r * 0.17f),  30, 0.0f, PI);
+        filled_arc(x, y + (r * 0.09f), (r * 0.17f), 30, PI, PI);
+        filled_arc(x + (r * 0.4f), y + (r * 0.11f), (r * 0.17f),  30, 0.0f, PI);
+        filled_arc(x + (r * 0.4f), y + (r * 0.09f), (r * 0.17f), 30, PI, PI);
+
+    }
+
+    //eye Brows
+    glColor3f(0, 0, 0);
+    glBegin(GL_POLYGON);
+    glVertex2f(x + (r * -0.2f), y + (r * 0.46f)); 
+    glVertex2f(x + (r * -0.4f), y + (r * 0.3f)); 
+    glVertex2f(x + (r * 0.2f), y + (r * 0.2f));
+    glVertex2f(x + (r * 0.2f), y + (r * 0.3f));
+    glEnd();
+
+    glBegin(GL_POLYGON);
+    glVertex2f(x + (r * 0.7f), y + (r * 0.46f));
+    glVertex2f(x + (r * 0.8f), y + (r * 0.3f));
+    glVertex2f(x + (r * 0.2f), y + (r * 0.2f));
+    glVertex2f(x + (r * 0.2f), y + (r * 0.3f));
+    glEnd();
+    //beak 0 aka closed
+    if(mouth == 0)
+    {
+        glColor3f(0, 0, 0); // Black
+        triangle({x, y + (r * -0.2f)}, 
+                 {x + (r * 0.2f), y}, 
+                 {x + (r * 0.85f), y + (r * -0.32f)});
+        
+        triangle({x, y + (r * -0.2f)}, 
+                 {x + (r * 0.2f), y + (r * -0.4f)}, 
+                 {x + (r * 0.85f), y + (r * -0.32f)});
+        
+        glColor3f(1, 0.55, 0); // Orange
+        triangle({x + (r * 0.05f), y + (r * -0.18f)}, 
+                 {x + (r * 0.2f), y + (r * -0.03f)}, 
+                 {x + (r * 0.765f), y  + (r * -0.3f)});
+        
+        triangle({x + (r * 0.06f), y + (r * -0.22f)}, 
+                 {x + (r * 0.2f), y + (r * -0.35f)}, 
+                 {x + (r * 0.72f), y + (r * -0.31f)});
+    }
+    else
+    {
+        glColor3f(0, 0, 0); // Black
+        triangle({x, y + (r * -0.2f)}, 
+                 {x + (r * 0.2f), y}, 
+                 {x + (r * 0.85f), y + (r * -0.32f)});
+        
+        triangle({x, y + (r * -0.2f)},
+                 {x + (r * 0.18f), y + (r * -0.44f)},
+                 {x + (r * 0.75f), y + (r * -0.44f)});
+
+        glColor3f(1, 0.55, 0); // Orange
+        triangle({x + (r * 0.05f), y + (r * -0.18f)}, 
+                 {x + (r * 0.2f), y + (r * -0.03f)}, 
+                 {x + (r * 0.765f), y  + (r * -0.3f)});
+
+        triangle({x + (r * 0.05f), y + (r * -0.24f)},
+                 {x + (r * 0.18f), y + (r * -0.42f)},
+                 {x + (r * 0.68f), y + (r * -0.43f)});
+        
+    }
 }
 
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT);
     
-    //main body
-    glColor3f(0, 0, 0);
-    Filled_Ellipse(200, 200, 100, 100, 50);
-    glColor3f(1, 0, 0);
-    Filled_Ellipse(200, 200, 98, 98, 50);
-    
-    //belly
-    glColor3f(0, 0, 0); 
-    Filled_Ellipse(200, 126, 65, 24, 50);
-    glColor3f(0.94, 0.90, 0.55);
-    Filled_Ellipse(200, 126, 63, 22, 50);
-    
-    //eyes
-    glColor3f(0, 0, 0);
-    Filled_Ellipse(200, 210, 20, 20, 30);
-    Filled_Ellipse(240, 210, 20, 20, 30);
-    glColor3f(1, 1, 1);
-    Filled_Ellipse(200, 210, 18, 18, 30);
-    Filled_Ellipse(240, 210, 18, 18, 30);
-    glColor3f(0, 0, 0);
-    Filled_Ellipse(208, 210, 5, 5, 30);
-    Filled_Ellipse(232, 210, 5, 5, 30);
-    
-    //beak
-    glColor3f(0, 0, 0);
-    triangle({200, 180}, {220, 200}, {260, 170});
-    triangle({200, 180}, {220, 160}, {260, 170});
-    glColor3f(1, 0.55, 0);
-    triangle({203, 181}, {220, 197}, {254, 172.2});
-    
-    glFlush();
+    draw_red_bird(200, 200, 100, 0, 1);
+    print_grid();
+
+    glutSwapBuffers();
 }
 
 void keyboard(unsigned char key, int x, int y)
@@ -227,14 +359,29 @@ void keyboard(unsigned char key, int x, int y)
         rx += dt;
         std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
         break;
-
-    case 'o':
+    case 'r':
         ry -= dt;
-        std::cout << '(' << x << ", " << y << ')' << " rx: " << rx << " ry: " << ry << std::endl;
+        std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
+        break;
+    case 't':
+        ry += dt;
+        std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
+        break;
+    case 'o':
+        rs -= PI / 180.0 / 2.0;
+        std::cout << '(' << cx << ", " << cy << ')' << " rs: " << rs << " re: " << re << std::endl;
         break;
     case 'p':
-        ry += dt;
-        std::cout << '(' << x << ", " << y << ')' << " rx: " << rx << " ry: " << ry << std::endl;
+        rs += da;
+        std::cout << '(' << cx << ", " << cy << ')' << " rs: " << rs << " re: " << re << std::endl;
+        break;
+    case 'u':
+        re -= da;
+        std::cout << '(' << cx << ", " << cy << ')' << " rs: " << rs << " re: " << re << std::endl;
+        break;
+    case 'i':
+        re += da;
+        std::cout << '(' << cx << ", " << cy << ')' << " rs: " << rs << " re: " << re << std::endl;
         break;
     case '+':
         dt += 0.1;

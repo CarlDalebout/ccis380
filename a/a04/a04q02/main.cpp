@@ -358,12 +358,111 @@ void draw_red_bird(float x = 200, float y = 200 , float r = 100, int eye = 0, in
     }
 }
 
+void draw_pig(float x = 200, float y = 200, float r = 100, int eye = 0, int mouth = 0)
+{
+    //main body
+    glColor3f(0, 0, 0);
+    Filled_Ellipse(x, y, r, r * 0.98f, 50);
+    glColor3f(0.35, 1, 0.2); // green
+    Filled_Ellipse(x, y, r * 0.98f, r * 0.96f, 50);
+
+    //eyes 0 aka open
+    if(eye == 0)
+    {
+        // eye shadow
+        glColor3f(0.35f, 0.8f, 0.2f);
+        filled_arc(x + (r * -0.6f), y + (r * -0.05f), r * 0.23f, 30, PI, PI);
+        filled_arc(x + (r * 0.6f), y + (r * -0.05f), r * 0.23f, 30, PI, PI);
+        
+        glColor3f(0, 0, 0);// black
+        Filled_Ellipse(x + (r * -0.6f), y, r * 0.23f, r * 0.25f, 30);
+        Filled_Ellipse(x + (r * 0.6f), y, r * 0.23f, r * 0.25f, 30);
+    
+        glColor3f(1, 1, 1); // white
+        Filled_Ellipse(x + (r * -0.6), y, r * 0.21f, r * 0.23f, 30);
+        Filled_Ellipse(x + (r * 0.6f), y, r * 0.21f, r * 0.23f, 30);
+    
+        glColor3f(0, 0, 0); // black
+        Filled_Ellipse(x + (r * -0.7f), y, r * 0.05f, r * 0.05f, 30);
+        Filled_Ellipse(x + (r * 0.7f), y, r * 0.05f, r * 0.05f, 30);
+    
+    }
+    else if(eye == 1)
+    {
+        // eye shadow
+        glColor3f(0.35f, 0.8f, 0.2f);
+        filled_arc(x + (r * -0.6f), y + (r * -0.05f), r * 0.23f, 30, PI, PI);
+        filled_arc(x + (r * 0.6f), y + (r * -0.05f), r * 0.23f, 30, PI, PI);
+        
+        glColor3f(0, 0, 0);// black
+        Filled_Ellipse(x + (r * -0.6f), y, r * 0.23f, r * 0.25f, 30);
+        Filled_Ellipse(x + (r * 0.6f), y, r * 0.23f, r * 0.25f, 30);
+    
+        glColor3f(1, 1, 1); // white
+        Filled_Ellipse(x + (r * -0.6), y, r * 0.21f, r * 0.23f, 30);
+        Filled_Ellipse(x + (r * 0.6f), y, r * 0.21f, r * 0.23f, 30);
+    
+        glColor3f(0, 0, 0); // black
+        Filled_Ellipse(x + (r * -0.7f), y, r * 0.05f, r * 0.05f, 30);
+        Filled_Ellipse(x + (r * 0.7f), y, r * 0.05f, r * 0.05f, 30);
+    
+        // black eye lids 
+        filled_arc(x + (r * -0.6), y, (r * 0.23f), 30, 0.0f, PI);
+        filled_arc(x + (r * 0.6f), y, (r * 0.23f),  30, 0.0f, PI);
+        
+        glColor3f(0.35, 1, 0.2); // green eye lids
+        filled_arc(x + (r * -0.6), y + (r * 0.015f), (r * 0.21f),  30, 0.0f, PI);
+        filled_arc(x + (r * 0.6f), y + (r * 0.015f), (r * 0.21f), 30, 0.0f, PI);
+    
+    }
+    else
+    {
+        // eye shadow
+        glColor3f(0.35f, 0.8f, 0.2f);
+        filled_arc(x + (r * -0.6f), y + (r * -0.05f), r * 0.23f, 30, PI, PI);
+        filled_arc(x + (r * 0.6f), y + (r * -0.05f), r * 0.23f, 30, PI, PI);
+        
+        glColor3f(0, 0, 0);// black
+        Filled_Ellipse(x, y + (r * 0.1f), r * 0.2f, r * 0.2f, 30);
+        Filled_Ellipse(x + (r * 0.4f), y + (r * 0.1f), r * 0.2f, r * 0.2f, 30);
+
+        // glColor3f(0, 0, 1);
+        glColor3f(0, 1, 0);// eye lids
+        filled_arc(x, y + (r * 0.11f), (r * 0.17f),  30, 0.0f, PI);
+        filled_arc(x, y + (r * 0.09f), (r * 0.17f), 30, PI, PI);
+        filled_arc(x + (r * 0.4f), y + (r * 0.11f), (r * 0.17f),  30, 0.0f, PI);
+        filled_arc(x + (r * 0.4f), y + (r * 0.09f), (r * 0.17f), 30, PI, PI);
+
+    }
+
+    if(mouth == 1)
+    {
+        
+    }
+
+    // shadow
+    glColor3f(0.35f, 0.8f, 0.2f);
+    filled_arc(x + (r * -0.05f), y + (r * -0.3f), r * 0.23f, 30, PI, PI);
+    //nose
+    glColor3f(0, 0.8f, 0);
+    Filled_Ellipse(x + (r * -0.05f), y + (r * -0.1f), (r * 0.4f), (r * 0.35f), 30);
+    glColor3f(0.5f, 1, 0);
+    Filled_Ellipse(x + (r * -0.05f), y + (r * -0.1f), (r * 0.38f), (r * 0.33f), 30);
+    //holes
+    glColor3f(0, 0, 0);
+    Filled_Ellipse(x + (r * -0.2f), y + (r * -0.1f), r * 0.1f, r * 0.15f, 30);
+    Filled_Ellipse(x + (r * 0.1f), y + (r * -0.1f), r * 0.09f, r * 0.1f, 30);
+
+}
+
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT);
     
-    draw_red_bird(cx, cy, rx, 0, 0);
+    draw_pig(200, 200, 100, 1, 0);
     print_grid();
+    glColor3f(0, 0, 1);
+    Filled_Ellipse(200, 200, 5, 5, 30);
 
     glutSwapBuffers();
 }

@@ -8,10 +8,10 @@
 const float PI = 3.14159;
 
 float cx = 200.0f;
-float cy = 202.0f;
+float cy = 200.0f;
 float rs = 0.0;
 float re = 2 * PI;
-float rx = 20.0f;
+float rx = 100.0f;
 float ry = 100.0f;
 float dt = 1.0f;
 float da = PI / 180.0 / 2.0;
@@ -363,8 +363,18 @@ void draw_pig(float x = 200, float y = 200, float r = 100, int eye = 0, int mout
     //main body
     glColor3f(0, 0, 0);
     Filled_Ellipse(x, y, r, r * 0.98f, 50);
+    Filled_Ellipse(x + (r * -0.55f), y + (r * 0.9f), r * 0.2f, r * 0.2f, 30);
+    Filled_Ellipse(x, y + (r * 1.08f), r * 0.2f, r * 0.2f, 30);
     glColor3f(0.35, 1, 0.2); // green
+    Filled_Ellipse(x + (r * -0.55f), y + (r * 0.9f), r * 0.18f, r * 0.18f, 30);
+    Filled_Ellipse(x, y + (r * 1.08f), r * 0.18f, r * 0.18f, 30);
     Filled_Ellipse(x, y, r * 0.98f, r * 0.96f, 50);
+
+    //ears
+    glColor3f(0.35f, 0.8f, 0.2f);
+    Filled_Ellipse(x + (r * -0.55f), y + (r * 0.9f), r * 0.08f, r * 0.08f, 30);
+    Filled_Ellipse(x, y + (r * 1.08f), r * 0.08f, r * 0.08f, 30);
+
 
     //eyes 0 aka open
     if(eye == 0)
@@ -435,15 +445,26 @@ void draw_pig(float x = 200, float y = 200, float r = 100, int eye = 0, int mout
 
     }
 
-    if(mouth == 1)
-    {
-        
-    }
-
     // shadow
     glColor3f(0.35f, 0.8f, 0.2f);
     filled_arc(x + (r * -0.05f), y + (r * -0.3f), r * 0.23f, 30, PI, PI);
-    //nose
+    
+    if(mouth == 1)
+    {
+        glColor3f(0, 0, 0);
+        Filled_Ellipse(x, y + (r * -0.25f), r * 0.35f, r * 0.35f, 30);
+        Filled_Ellipse(x + (r * -0.32f), y + (r * -0.36f), r * 0.1f, r * 0.1f, 30);
+        Filled_Ellipse(x + (r * -0.16f), y + (r * -0.46f), r * 0.1f, r * 0.1f, 30);
+        Filled_Ellipse(x + (r * 0.02f), y + (r * -0.48f), r * 0.1f, r * 0.1f, 30);
+        Filled_Ellipse(x + (r * 0.2f), y + (r * -0.42), r * 0.1f, r * 0.1f, 30);
+        glColor3f(1, 1, 1);
+        Filled_Ellipse(x + (r * -0.32f), y + (r * -0.36f), r * 0.08f, r * 0.08f, 30);
+        Filled_Ellipse(x + (r * -0.16f), y + (r * -0.46f), r * 0.08f, r * 0.08f, 30);
+        Filled_Ellipse(x + (r * 0.02f), y + (r * -0.48f), r * 0.08f, r * 0.08f, 30);
+        Filled_Ellipse(x + (r * 0.2f), y + (r * -0.42f), r * 0.08f, r * 0.08f, 30);
+    }
+
+    //nose 
     glColor3f(0, 0.8f, 0);
     Filled_Ellipse(x + (r * -0.05f), y + (r * -0.1f), (r * 0.4f), (r * 0.35f), 30);
     glColor3f(0.5f, 1, 0);
@@ -459,7 +480,7 @@ void display()
 {
     glClear(GL_COLOR_BUFFER_BIT);
     
-    draw_pig(200, 200, 100, 1, 0);
+    draw_pig(200, 200, 100, 0, 1);
     print_grid();
     glColor3f(0, 0, 1);
     Filled_Ellipse(200, 200, 5, 5, 30);

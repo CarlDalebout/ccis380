@@ -1,0 +1,116 @@
+%-*-latex-*-
+\textsc{Field axioms and axioms of $\R$}
+
+$(F, 0, 1, +, \cdot)$ is a \defonet{field} if
+$F$ is a set and $0,1 \in F$ and satisfies the following:
+\begin{enumerate}
+  \li \textsc{Axioms of $+$}
+  \begin{myenumt}
+    \li \textsc{Closure of $+$}: If $x, y \in \R$, then $x + y \in \R$.
+    \li \textsc{Associativity of $+$}: If $x, y, z \in \R$, then
+    $(x + y) + z = x + (y + z)$.
+    \li \textsc{Inverse of $+$}: If $x \in \R$, then
+    there is some $x' \in \R$ such that $x + x' = 0 = x' + x$.
+    (It can be shown that additive inverse of $x$ is unique.
+    Therefore one can denote the additive inverse of $x$ by $-x$.)
+    \li \textsc{Neutrality of $+$}:
+    If $x \in \R$, then $x + 0 = x = 0 + x$.
+    \li \textsc{Commutativity of $+$}:
+    If $x, y \in \R$, then $x + y = y + x$.
+  \end{myenumt}
+  We define $x - y = x + (-y)$ if $x, y \in F$.
+  \li \textsc{Axioms of $\cdot$}
+  \begin{myenumt}
+    \li \textsc{Closure of $\cdot$}: If $x, y \in \R$, then $x \cdot y \in \R$.
+    \li \textsc{Associativity of $\cdot$}: If $x, y, z \in \R$, then
+    $(x \cdot y) \cdot z = x \cdot (y \cdot z)$.
+    \li \textsc{Inverse of $\cdot$}: If $x \in \R$ and $x \neq 0$, then
+    there is some $x' \in \R$ such that $x \cdot x' = 1 = x' \cdot x$.
+    (It can be shown that multiplicative inverse of $x$ is unique.
+    Therefore one can denote the additive inverse of $x$ by $x^{-1}$.)
+    \li \textsc{Neutrality of $\cdot$}:
+    If $x \in \R$, then $x \cdot 1 = x = 1 \cdot x$.
+    \li \textsc{Commutativity of $\cdot$}:
+    If $x, y \in \R$, then $x \cdot y = y \cdot x$.
+  \end{myenumt}
+  Frequently we'll write $xy$ for $x \cdot y$.
+  Also, if $y \neq 0$, I'll write $x/y$ for $x \cdot y^{-1}$.
+  \li \textsc{Distributivity}:
+  If $x, y, z \in \R$, then $x \cdot (y  + z) = x \cdot y + x \cdot z \in \R$.
+\end{enumerate}
+We will assume the following axioms about $(\R, 0, 1, +, \cdot)$:
+\begin{enumerate}
+  \li $(\R, 0, 1, + \cdot)$ is a field, i.e. it satisfies the field axioms.
+  \li \textsc{Nontriviality}: $0 \neq 1$.
+  \li \textsc{Order axioms}: There is a subset $P \subseteq \R$ such that
+  \begin{myenumt}
+    \li If $x \in \R$, exactly one of the following is true:
+    $x \in P$, $x = 0$, $-x \in P$
+    \li If $x, y \in P$, then $x + y \in P$.
+    \li If $x, y \in P$, then $x \cdot y \in P$.
+  \end{myenumt}
+  With the above, I can define $x > 0$ is $x \in P$
+  and also $x \geq 0$ if $x = 0$ or $x > 0$.
+  Furthermore I can define $x > y$ is $x - y > 0$ and $x \geq y$ if
+  $x - y \geq 0$.
+  \li \textsc{Least upper bound}:
+  Every nonempty set of $\R$ has a least upper bound.
+  (If $X$ is a nonempty set of $\R$, then $m \in \R$ is an \defonet{upper bound}
+  of
+  $X$ if
+  \[
+  x \leq m \text{ for all $x \in X$}
+  \]
+  (duh).
+  $\ell \in \R$ is a \defonet{least upper bound (l.u.b.)} of
+  $X$ if $\ell$ is an upper bound of $X$
+  and if $m$ is an upper bound of $X$, then $\ell \leq m$.)
+\end{enumerate}
+For $x \in \R$, the absolute value of $x$ is defined to be
+\[
+|x|
+=
+\begin{cases}
+  x  & \text{ if $x \geq 0$} \\
+  -x & \text{ otherwise}
+\end{cases}
+\]
+
+The following facts about any field $F$ can be proven from the field axioms of
+$F$.
+But we won't prove them.
+We will simply assume that they hold.
+You can try to prove them on your own. Most of these are proven in CISS451.
+
+\textbf{Proposition A.}
+Let $a, b, c, d \in F$.
+\begin{myenumt}
+\item $-0 = 0$
+\item $0 \cdot a = 0 = a \cdot 0$
+\item $(-1) \cdot a = -a = a \cdot (-1)$
+\item $(-1) \cdot (-1) = 1$
+\end{myenumt}
+
+Here are some basic facts about the absolute value function on $\R$.
+
+\textbf{Proposition B.}
+Let $a, b, c, d \in \R$.
+\begin{myenumt}
+\item $|0| = 0$
+\item \textsc{Multiplicativity}: $|xy| = |x| |y|$
+\item \textsc{Triangle inequality}: $|x + y| \leq |x| + |y|$
+\end{myenumt}
+
+Most of the above is not difficult.
+The only one that might not be immediate is the triangle inequality of
+$\R$.
+It's a good exercise.
+
+In the proofs below, you can quote Proposition A and Proposition B.
+You have to specify which part.
+For instance
+\begin{align*}
+x + ((-1) \cdot (-1)) \cdot y
+&= x + 1 \cdot y  & & \text{ by Proposition A(d)} \\
+&= x + y  & & \text{ by neutral axiom of $\cdot$} \\
+\end{align*}

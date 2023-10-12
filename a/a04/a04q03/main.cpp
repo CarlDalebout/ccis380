@@ -7,16 +7,14 @@
 
 const float PI = 3.14159;
 
-float cx    = 200.0f;
-float cy    = 200.0f;
-float rs    = 0.0;
-float re    = 2 * PI;
-float rx    = 100.0f;
-float ry    = 100.0f;
-float dt    = 1.0f;
-float da    = PI / 180.0 / 2.0;
-int eyes    = 0;
-int mouth   = 0;
+float cx = 200.0f;
+float cy = 200.0f;
+float rs = 0.0;
+float re = 2 * PI;
+float rx = 100.0f;
+float ry = 100.0f;
+float dt = 1.0f;
+float da = PI / 180.0 / 2.0;
 
 struct point
 {
@@ -24,23 +22,24 @@ struct point
     float y;
 };
 
-void print_grid()
+void print_grid(int w = mygllib::WIN_W, int h = mygllib::WIN_H, int x_segments = 20, int y_segments = 20)
 {
 
     glColor3f(0, 0, 0);
-    float dr = mygllib::WIN_W / 20;
-    for(int i = 1; i <= 20; ++i)
+    float dx = w / x_segments;
+    float dy = h / y_segments;
+    for(int i = 1; i <= x_segments; ++i)
     {
         glBegin(GL_LINES);
-        glVertex2f(i * dr, 0);
-        glVertex2f(i * dr, mygllib::WIN_H);
+        glVertex2f(i * dx, 0);
+        glVertex2f(i * dx, h);
         glEnd();
     }
-    for(int i = 1; i <= 20; ++i)
+    for(int i = 1; i <= y_segments; ++i)
     {
         glBegin(GL_LINES);
-        glVertex2f(0, i * dr);
-        glVertex2f(mygllib::WIN_W , i * dr);
+        glVertex2f(0, i * dy);
+        glVertex2f(w , i * dy);
         glEnd();
     }
 }
@@ -360,74 +359,255 @@ void draw_red_bird(float x = 200, float y = 200 , float r = 100, int eye = 0, in
     }
 }
 
+void draw_pig(float x = 200, float y = 200, float r = 100, int eye = 0, int mouth = 0)
+{
+    //main body
+    glColor3f(0, 0, 0);
+    Filled_Ellipse(x, y, r, r * 0.98f, 50);
+    Filled_Ellipse(x + (r * -0.55f), y + (r * 0.9f), r * 0.2f, r * 0.2f, 30);
+    Filled_Ellipse(x, y + (r * 1.08f), r * 0.2f, r * 0.2f, 30);
+    glColor3f(0.35, 1, 0.2); // green
+    Filled_Ellipse(x + (r * -0.55f), y + (r * 0.9f), r * 0.18f, r * 0.18f, 30);
+    Filled_Ellipse(x, y + (r * 1.08f), r * 0.18f, r * 0.18f, 30);
+    Filled_Ellipse(x, y, r * 0.98f, r * 0.96f, 50);
+
+    //ears
+    glColor3f(0.35f, 0.8f, 0.2f);
+    Filled_Ellipse(x + (r * -0.55f), y + (r * 0.9f), r * 0.08f, r * 0.08f, 30);
+    Filled_Ellipse(x, y + (r * 1.08f), r * 0.08f, r * 0.08f, 30);
+
+
+    //eyes 0 aka open
+    if(eye == 0)
+    {
+        // eye shadow
+        glColor3f(0.35f, 0.8f, 0.2f);
+        filled_arc(x + (r * -0.6f), y + (r * -0.05f), r * 0.23f, 30, PI, PI);
+        filled_arc(x + (r * 0.6f), y + (r * -0.05f), r * 0.23f, 30, PI, PI);
+        
+        glColor3f(0, 0, 0);// black
+        Filled_Ellipse(x + (r * -0.6f), y, r * 0.23f, r * 0.25f, 30);
+        Filled_Ellipse(x + (r * 0.6f), y, r * 0.23f, r * 0.25f, 30);
+    
+        glColor3f(1, 1, 1); // white
+        Filled_Ellipse(x + (r * -0.6), y, r * 0.21f, r * 0.23f, 30);
+        Filled_Ellipse(x + (r * 0.6f), y, r * 0.21f, r * 0.23f, 30);
+    
+        glColor3f(0, 0, 0); // black
+        Filled_Ellipse(x + (r * -0.7f), y, r * 0.05f, r * 0.05f, 30);
+        Filled_Ellipse(x + (r * 0.7f), y, r * 0.05f, r * 0.05f, 30);
+    
+    }
+    else if(eye == 1)
+    {
+        // eye shadow
+        glColor3f(0.35f, 0.8f, 0.2f);
+        filled_arc(x + (r * -0.6f), y + (r * -0.05f), r * 0.23f, 30, PI, PI);
+        filled_arc(x + (r * 0.6f), y + (r * -0.05f), r * 0.23f, 30, PI, PI);
+        
+        glColor3f(0, 0, 0);// black
+        Filled_Ellipse(x + (r * -0.6f), y, r * 0.23f, r * 0.25f, 30);
+        Filled_Ellipse(x + (r * 0.6f), y, r * 0.23f, r * 0.25f, 30);
+    
+        glColor3f(1, 1, 1); // white
+        Filled_Ellipse(x + (r * -0.6), y, r * 0.21f, r * 0.23f, 30);
+        Filled_Ellipse(x + (r * 0.6f), y, r * 0.21f, r * 0.23f, 30);
+    
+        glColor3f(0, 0, 0); // black
+        Filled_Ellipse(x + (r * -0.7f), y, r * 0.05f, r * 0.05f, 30);
+        Filled_Ellipse(x + (r * 0.7f), y, r * 0.05f, r * 0.05f, 30);
+    
+        // black eye lids 
+        filled_arc(x + (r * -0.6), y, (r * 0.23f), 30, 0.0f, PI);
+        filled_arc(x + (r * 0.6f), y, (r * 0.23f),  30, 0.0f, PI);
+        
+        glColor3f(0.35, 1, 0.2); // green eye lids
+        filled_arc(x + (r * -0.6), y + (r * 0.015f), (r * 0.21f),  30, 0.0f, PI);
+        filled_arc(x + (r * 0.6f), y + (r * 0.015f), (r * 0.21f), 30, 0.0f, PI);
+    
+    }
+    else
+    {
+        // eye shadow
+        glColor3f(0.35f, 0.8f, 0.2f);
+        filled_arc(x + (r * -0.6f), y + (r * -0.05f), r * 0.23f, 30, PI, PI);
+        filled_arc(x + (r * 0.6f), y + (r * -0.05f), r * 0.23f, 30, PI, PI);
+        
+        glColor3f(0, 0, 0);// black
+        Filled_Ellipse(x, y + (r * 0.1f), r * 0.2f, r * 0.2f, 30);
+        Filled_Ellipse(x + (r * 0.4f), y + (r * 0.1f), r * 0.2f, r * 0.2f, 30);
+
+        // glColor3f(0, 0, 1);
+        glColor3f(0, 1, 0);// eye lids
+        filled_arc(x, y + (r * 0.11f), (r * 0.17f),  30, 0.0f, PI);
+        filled_arc(x, y + (r * 0.09f), (r * 0.17f), 30, PI, PI);
+        filled_arc(x + (r * 0.4f), y + (r * 0.11f), (r * 0.17f),  30, 0.0f, PI);
+        filled_arc(x + (r * 0.4f), y + (r * 0.09f), (r * 0.17f), 30, PI, PI);
+
+    }
+
+    // shadow
+    glColor3f(0.35f, 0.8f, 0.2f);
+    filled_arc(x + (r * -0.05f), y + (r * -0.3f), r * 0.23f, 30, PI, PI);
+    
+    if(mouth == 1)
+    {
+        glColor3f(0, 0, 0);
+        Filled_Ellipse(x, y + (r * -0.25f), r * 0.35f, r * 0.35f, 30);
+        Filled_Ellipse(x + (r * -0.32f), y + (r * -0.36f), r * 0.1f, r * 0.1f, 30);
+        Filled_Ellipse(x + (r * -0.16f), y + (r * -0.46f), r * 0.1f, r * 0.1f, 30);
+        Filled_Ellipse(x + (r * 0.02f), y + (r * -0.48f), r * 0.1f, r * 0.1f, 30);
+        Filled_Ellipse(x + (r * 0.2f), y + (r * -0.42), r * 0.1f, r * 0.1f, 30);
+        glColor3f(1, 1, 1);
+        Filled_Ellipse(x + (r * -0.32f), y + (r * -0.36f), r * 0.08f, r * 0.08f, 30);
+        Filled_Ellipse(x + (r * -0.16f), y + (r * -0.46f), r * 0.08f, r * 0.08f, 30);
+        Filled_Ellipse(x + (r * 0.02f), y + (r * -0.48f), r * 0.08f, r * 0.08f, 30);
+        Filled_Ellipse(x + (r * 0.2f), y + (r * -0.42f), r * 0.08f, r * 0.08f, 30);
+    }
+
+    //nose 
+    glColor3f(0, 0.8f, 0);
+    Filled_Ellipse(x + (r * -0.05f), y + (r * -0.1f), (r * 0.4f), (r * 0.35f), 30);
+    glColor3f(0.5f, 1, 0);
+    Filled_Ellipse(x + (r * -0.05f), y + (r * -0.1f), (r * 0.38f), (r * 0.33f), 30);
+    //holes
+    glColor3f(0, 0, 0);
+    Filled_Ellipse(x + (r * -0.2f), y + (r * -0.1f), r * 0.1f, r * 0.15f, 30);
+    Filled_Ellipse(x + (r * 0.1f), y + (r * -0.1f), r * 0.09f, r * 0.1f, 30);
+
+}
+
+void draw_map(float x = 0, float y = 0, float r = 100)
+{
+    //sky
+    glColor3f(0.4f, 0.9f, 0.9f);
+    glBegin(GL_POLYGON);
+    glVertex2f(0, 0);
+    glVertex2f(0, 400);
+    glVertex2f(600, 400);
+    glVertex2f(600, 0);
+    glEnd();
+    
+    //brow dirt
+    glColor3f(0.2f, 0.15f, 0.04f);
+    glBegin(GL_POLYGON);
+    glVertex2f(0, 0);
+    glVertex2f(0, 100);
+    glVertex2f(600, 100);
+    glVertex2f(600, 0);
+    glEnd();
+
+    //grass
+    glColor3f(0, 1, 0);
+    glBegin(GL_POLYGON);
+    glVertex2f(0,   100);
+    glVertex2f(0,   110);
+    glVertex2f(600, 110);
+    glVertex2f(600, 100);
+    glEnd();
+
+    //bumps
+    glColor3f(0.63f, 0.52f, 0.14f);
+    glBegin(GL_POLYGON);
+    glVertex2f(20,  110);
+    glVertex2f(40,  140);
+    glVertex2f(130, 140);
+    glVertex2f(150, 110);
+    glEnd();
+
+    glBegin(GL_POLYGON);
+    glVertex2f(300,  110);
+    glVertex2f(320,  140);
+    glVertex2f(560,  140);
+    glVertex2f(580,  110);
+    glEnd();
+}
+
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT);
     
-    draw_red_bird(cx, cy, rx, eyes, mouth);
-    print_grid();
+    // draw_pig(200, 200, 100, 0, 1);
+    draw_map();
+    // print_grid(600, 400, 60, 50);
+    glColor3f(0, 0, 1);
+    Filled_Ellipse(200, 200, 5, 5, 30);
 
     glutSwapBuffers();
-}
-
-void SpecialInput(int key, int x, int y)
-{
-    switch(key)
-    {
-        case GLUT_KEY_UP:
-            cy += dt;
-            // std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
-            break;
-        case GLUT_KEY_DOWN:
-            cy -= dt;
-            // std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl; 
-            break;
-        case GLUT_KEY_LEFT:
-            cx -= dt;
-            // std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
-            break;
-        case GLUT_KEY_RIGHT:
-            cx += dt;
-            // std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
-            break;
-    }    
-    glutPostRedisplay();
 }
 
 void keyboard(unsigned char key, int x, int y)
 {
     switch (key)
     {
-        case '-':
-            rx -= dt;
-            // std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
-            break;
-        case '+':
-            rx += dt;
-            // std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
-            break;
-        case 'a':
-            if(eyes == 0)
-                eyes = 1;
-            else 
-                eyes = 0;
-            break;  
-        case 'c':
-            if(mouth == 0)
-                mouth = 1;
-            else 
-                mouth = 0;
-            break;
+    case 'w':
+        cy += dt;
+        std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
+        break;
+    case 's':
+        cy -= dt;
+        std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl; 
+        break;
+    case 'a':
+        cx -= dt;
+        std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
+        break;
+    case 'd':
+        cx += dt;
+        std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
+        break;
+    
+    case 'q':
+        rx -= dt;
+        std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
+        break;
+
+    case 'e':
+        rx += dt;
+        std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
+        break;
+    case 'r':
+        ry -= dt;
+        std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
+        break;
+    case 't':
+        ry += dt;
+        std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
+        break;
+    case 'o':
+        rs -= PI / 180.0 / 2.0;
+        std::cout << '(' << cx << ", " << cy << ')' << " rs: " << rs << " re: " << re << std::endl;
+        break;
+    case 'p':
+        rs += da;
+        std::cout << '(' << cx << ", " << cy << ')' << " rs: " << rs << " re: " << re << std::endl;
+        break;
+    case 'u':
+        re -= da;
+        std::cout << '(' << cx << ", " << cy << ')' << " rs: " << rs << " re: " << re << std::endl;
+        break;
+    case 'i':
+        re += da;
+        std::cout << '(' << cx << ", " << cy << ')' << " rs: " << rs << " re: " << re << std::endl;
+        break;
+    case '+':
+        dt += 0.1;
+        std::cout << dt << std::endl;
+        break;
+    case '-':
+        if(dt != 0.1)
+            dt -= 0.1;
+        std::cout << dt << std::endl;
+        break;  
     }
     glutPostRedisplay();
 }
 
 int main()
 {
-    mygllib::init2d(900, 900);
+    mygllib::init2d(600, 400);
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
-    glutSpecialFunc(SpecialInput);
     glutMainLoop();
     return 0;
 }

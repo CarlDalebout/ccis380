@@ -1,0 +1,53 @@
+%-*-latex-*-
+
+I'll state this proposition, but you don't have to provide proofs:
+
+\textbf{Proposition 2.}
+Let $\vec{u}, \vec{v}, \vec{w}$ be vectors and $c, d \in \R$.
+Then
+\begin{myenumt}
+\item $\| \vec{u} \| \geq 0$
+\item $\| \vec{u} \| = 0$ iff $\vec{u} = \vec{0}$.
+\item $\| c \vec{u} \| = |c| \cdot \| \vec{u} \|$
+\item \textsc{Triangle inequality}: $\| \vec{u} + \vec{v} \| \leq \| \vec{u} \| + \| \vec{v} \|$
+\end{myenumt}
+
+The proof of the triangle inequality for 2D vectors is in the notes.
+Study it carefully to the point that you can produce the proof on your own.
+
+For this question, you'll prove Proposition 3:
+
+\textbf{Proposition 3.}
+Let $\vec{u}$, $\vec{v}$ be 2D vectors over $\R$
+and let $\alpha \in \R$.
+\begin{myenumt}
+\item
+  $\vec{u} \cdot \vec{v} = \vec{v} \cdot \vec{u}$
+\item
+  $(\alpha \vec{u}) \cdot \vec{v}
+  =
+  \alpha (\vec{u} \cdot \vec{v})
+  =
+  \vec{u} \cdot (\alpha \vec{v})$
+\item
+  $\vec{u} \cdot ( \vec{v} + \vec{w} )
+  =
+  \vec{u} \cdot \vec{v} + \vec{u} \cdot \vec{w}$
+\item 
+  $\vec{u} \cdot \vec{u} 
+  =
+  \| \vec{u} \|^2$
+\item
+  $\vec{u} \cdot \vec{v} =  \| \vec{u} \| \| \vec{v} \| \cos \theta$
+  where
+  $\theta$ is the angle between $\vec{u}$ and $\vec{v}$.
+\item
+  $| \vec{u} \cdot \vec{v} | \leq \| \vec{u} \| \| \vec{u} \|$
+\item
+  If $\vec{u}$ and $\vec{u}$ are nonzero, then
+  $\vec{u}$ and $\vec{v}$ are perpendicular iff $\vec{u} \cdot \vec{v} = 0$.
+\item
+  If $\vec{u} \neq \vec{0}$, then
+  $(1/\|\vec{u}\|) \cdot \vec{u}$ is a unit vector.
+\end{myenumt}
+(Edit \verb!q02.tex!.)

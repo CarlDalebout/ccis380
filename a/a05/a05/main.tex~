@@ -1,0 +1,184 @@
+\input{myassignmentpreamble.tex}
+\input{yliow.tex}
+\input{ciss380.tex}
+\renewcommand\TITLE{Assignment 4}
+
+\usepackage{pdfpages}
+
+
+\begin{document}
+\topmatter
+
+Discussion is limited to group study my notes on concepts and 
+examples relevant to this assignment.
+There should be no discussion directly related to the assignment questions.
+
+Start work ASAP.
+
+Note that there should be a directory for each question.
+For question 1, the name of the folder must be \verb!a04q01!, etc.
+Each directory must contain a \verb!makefile!.
+Submission instructions will be provided in class.
+
+For this assignment, you will be building slightly more complex 2D
+shapes using geometric primitives and writing a program that 
+demonstrates your geometric figure.
+The program will involve user inputs from the keyboard.
+
+\newpage
+Q1. [Angry bird: red bird]
+
+The goal is to write a function 
+\begin{console}
+void draw_red_bird(float x, float y, float r, int eye, int mouth);
+\end{console}
+The \verb!x!, \verb!y! gives the center of thee body of the red bird
+and the \verb!r! is the radius of the bird.
+We assume that the body of the first is a circle.
+(If you like you can make it an ellipse that fits exactly into a circle
+but that is not necessary.)
+When \verb!eye! is 2, the eye is wide open and when it is 1, the 
+eye is closed.
+When the \verb!mouth! is \verb!0!, the beak is closed and 
+when it is \verb!1!, it is open. 
+The features of the bird must be proportional to the 
+radius of the body of the first.
+In other words, when the radius is increased, the eyes should also
+increase proportionally.
+
+In the design, you may replaced any shape that is roughly a circle by a circle.
+For instance the body of the red bird is not exactly a circle.
+But for this assignment you may use a circle for the body of the red bird.
+
+The program when executed, displays the red bird in a window
+in the middle. (You pick the initial radius.)
+When the arrow keys (left, right, up, down) 
+are pressed, the position of the bird
+moves accordingly.
+Initially, the mouth (i.e. beak) is closed and the eye is opened.
+When the \verb!a! key is pressed, the eye is closed.
+When the \verb!c! key is pressed, the mouth is opened.
+When \verb!+! is pressed, the radius of the bird increases by a certain amount.
+When \verb!-! is pressed, the radius of the bird decreases by the same amount.
+(You determine the amount of change in the radius.)
+
+Refer to the attached design sheets.
+
+[It's up to you if you want to worry about aspect ratio on window resize.
+I will not test resizing the window.]
+
+Here are some screenshots of my program (you don't have to follow it pixel-perfect):
+\begin{center}
+\includegraphics[width=2in]{angry-bird-0.png}
+\end{center}
+\begin{center}
+\includegraphics[width=2in]{angry-bird-1.png}
+\end{center}
+\begin{center}
+\includegraphics[width=2in]{angry-bird-2.png}
+\end{center}
+\begin{center}
+\includegraphics[width=2in]{angry-bird-3.png}
+\end{center}
+(Last one is after pressing \verb!'-'! and moving it.)
+
+
+
+\newpage
+Q2. [Angry bird: minion pig]
+
+This is similar to Q1 above except that the eye has three states:
+opened, closed, and half-closed.
+When the program executes, pressing the \verb!b! key will cause the 
+eye to be half-closed.
+All other keys are just like in Q1.
+
+In the design, you may replaced any shape that is roughly a circle by a circle.
+For instance the body of the minion pig is not exactly a circle.
+But for this assignment you may use a circle for its body.
+
+Refer to the attached design sheets.
+
+[It's up to you if you want to worry about aspect ratio on window resize.
+I will not test resizing the window.]
+
+Here are some screenshots of my program (you don't have to follow is pixel-perfect):
+\begin{center}
+\includegraphics[width=2in]{pig-0.png}
+\end{center}
+\begin{center}
+\includegraphics[width=2in]{pig-1.png}
+\end{center}
+\begin{center}
+\includegraphics[width=2in]{pig-2.png}
+\end{center}
+\begin{center}
+\includegraphics[width=2in]{pig-3.png}
+\end{center}
+(Last one is after pressing \verb!'+'!.)
+
+
+\newpage
+Q3. [Angry bird: landscape and zoom]
+
+While the previous two questions move the objects, this question
+involves moving the \lq\lq camera''.
+
+(We're changing the parameters of the orthogonal 2D 
+projection. This is simulating the viewer position.
+OpenGL has a camera that simplifies this for you. 
+We're doing this by-hand without the help of the camera.
+This way you learn how OpenGL does it under the hood.)
+
+First create this:
+\begin{center}
+\includegraphics[width=5in]{angry-bird.jpg}
+\end{center}
+The window size is 600 by 400.
+The orthogonal 2D projection view is onto the 
+the world coordinate space of $[0,600] \times [0, 400]$.
+The above drawing is of course in this space; nothing is drawn
+outside this space.
+As you can see from the above diagram, the viewport is the whole window.
+(As above, I will not test your program by changing window size.)
+
+This is a practice on modeling using basic geometric primitives.
+You can use any geometric primitives that we covered in our notes.
+You do not need to follow the exact colors as shown.
+You also do not need to used the exact vertices or shapes as shown above.
+But you must have a light blue background sky,
+the cross sectional underground soil which is dark brown,
+the grass which is green, and the two light brown plateaus for the 
+angry birds and the bad piggies.
+The grass is basically 100 randomly generated triangles - note that 
+the grass stays the same on redraw. 
+The blades of grass should be evenly distribute (statistically speaking).
+
+
+Now for the next part which involved user inputs, animation, and 
+zooming-in and -out.
+
+Allow the user to use the key \verb!i! to zoom in and 
+key \verb!o! to zoom out. 
+When zooming in and out, the center of the view will stay in the center
+of the window.
+(You choose how fast the zoom-in and zoom-out behaves but it should
+reasonally smooth and in small increments/decrements.)
+Also, your program must allow the user to move the view using
+the arrow keys.
+(You choose how fast the view moves but it should
+reasonally smooth and in small increments/decrements.)
+At all times, the view shown is always part of the 
+$[0,600] \times [0, 400]$
+space in the world coordinate space, i.e., nothing outside
+the $[0,600] \times [0, 400]$ region in the world coordinate system
+is ever shown in the viewport.
+Again, the viewport is alway the whole window.
+Note that if you zoom-in, move toward the top-left corner as much as possible, 
+then you cannot zoom-out since the center of your view must correspond to the
+center of the window.
+
+\newpage
+\includepdf[pages={1,2,3,4,5,6,7,8}]{design.pdf}
+
+\end{document}

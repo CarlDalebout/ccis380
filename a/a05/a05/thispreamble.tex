@@ -1,0 +1,49 @@
+\input{myassignmentpreamble.tex}
+\input{yliow.tex}
+\input{ciss380.tex}
+\renewcommand\TITLE{Assignment 5}
+
+\renewcommand\EMAIL{}
+\newcommand\defonet[1]{\textbf{#1}}
+
+
+% ADDED 2023/07/03
+\makeatletter
+\newlist{myenumt@}{enumerate}{1}
+\setlist{nosep,noitemsep,topsep=0pt}
+\setlist[itemize]{noitemsep,topsep=0pt}
+\setlist[enumerate]{noitemsep,topsep=0pt}
+\setlist[myenumt@]{label=\normalfont{(\alph*)},ref=\arabic*,nosep,topsep=0pt,partopsep=0pt,parsep=0pt,itemsep=0pt}
+\newenvironment{myenumt}[1][]
+  {\begin{myenumt@}[#1]
+     }
+  {\end{myenumt@}}
+\makeatother
+
+
+
+\begin{document}
+\topmatter
+
+\textsc{Objectives}
+\begin{myenumt}
+\li Prove statements about vectors
+\end{myenumt}
+
+I expect the proofs to be properly written in the mathematical sense.
+Every step must be justified.
+Once you have finish one proof, talk to me.
+I'll make suggestions and point out the mistakes,
+you make the corrections, and repeat until it's really done.
+It's best to print out a hardcopy (free printing at BUH CS Lab)
+so I can make comments/corrections on it.
+Talk to one another too.
+
+If you need a fact to justify a deduction, but you can't prove it
+or find it in the axioms, let me know.
+If it's too difficult to prove, I'll give hints.
+If it's still too difficult, I might include that as a fact without proof
+for you to use.
+
+There is a \verb!latex.pdf! at my website \url{http://yliow.github.io}.
+Or just ask me if you have questions about \LaTeX.

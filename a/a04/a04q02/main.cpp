@@ -15,6 +15,8 @@ float rx = 100.0f;
 float ry = 100.0f;
 float dt = 1.0f;
 float da = PI / 180.0 / 2.0;
+int eyes = 0;
+int mouth = 0;
 
 struct point
 {
@@ -480,77 +482,62 @@ void display()
 {
     glClear(GL_COLOR_BUFFER_BIT);
     
-    draw_pig(200, 200, 100, 0, 1);
+    draw_pig(cx, cy, rx, eyes, mouth);
     print_grid();
-    glColor3f(0, 0, 1);
-    Filled_Ellipse(200, 200, 5, 5, 30);
+    // glColor3f(0, 0, 1);
+    // Filled_Ellipse(200, 200, 5, 5, 30);
 
     glutSwapBuffers();
+}
+
+void SpecialInput(int key, int x, int y)
+{
+    switch(key)
+    {
+        case GLUT_KEY_UP:
+            cy += dt;
+            // std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
+            break;
+        case GLUT_KEY_DOWN:
+            cy -= dt;
+            // std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl; 
+            break;
+        case GLUT_KEY_LEFT:
+            cx -= dt;
+            // std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
+            break;
+        case GLUT_KEY_RIGHT:
+            cx += dt;
+            // std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
+            break;
+    }    
+    glutPostRedisplay();
 }
 
 void keyboard(unsigned char key, int x, int y)
 {
     switch (key)
     {
-    case 'w':
-        cy += dt;
-        std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
-        break;
-    case 's':
-        cy -= dt;
-        std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl; 
-        break;
-    case 'a':
-        cx -= dt;
-        std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
-        break;
-    case 'd':
-        cx += dt;
-        std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
-        break;
-    
-    case 'q':
-        rx -= dt;
-        std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
-        break;
-
-    case 'e':
-        rx += dt;
-        std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
-        break;
-    case 'r':
-        ry -= dt;
-        std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
-        break;
-    case 't':
-        ry += dt;
-        std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
-        break;
-    case 'o':
-        rs -= PI / 180.0 / 2.0;
-        std::cout << '(' << cx << ", " << cy << ')' << " rs: " << rs << " re: " << re << std::endl;
-        break;
-    case 'p':
-        rs += da;
-        std::cout << '(' << cx << ", " << cy << ')' << " rs: " << rs << " re: " << re << std::endl;
-        break;
-    case 'u':
-        re -= da;
-        std::cout << '(' << cx << ", " << cy << ')' << " rs: " << rs << " re: " << re << std::endl;
-        break;
-    case 'i':
-        re += da;
-        std::cout << '(' << cx << ", " << cy << ')' << " rs: " << rs << " re: " << re << std::endl;
-        break;
-    case '+':
-        dt += 0.1;
-        std::cout << dt << std::endl;
-        break;
-    case '-':
-        if(dt != 0.1)
-            dt -= 0.1;
-        std::cout << dt << std::endl;
-        break;  
+        case '-':
+            rx -= dt;
+            // std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
+            break;
+        case '+':
+            rx += dt;
+            // std::cout << '(' << cx << ", " << cy << ')' << " rx: " << rx << " ry: " << ry << std::endl;
+            break;
+        case 'a':
+            if(eyes == 0)
+                eyes = 1;
+            else 
+                eyes = 0;
+            break;  
+        case 'c':
+            if(mouth == 0)
+                mouth = 1;
+            else 
+                mouth = 0;
+            break;
     }
     glutPostRedisplay();
 }
@@ -560,6 +547,7 @@ int main()
     mygllib::init2d(900, 900);
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
+    glutSpecialFunc(SpecialInput);
     glutMainLoop();
     return 0;
 }

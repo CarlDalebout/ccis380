@@ -1,0 +1,109 @@
+\input{myquizpreamble.tex}
+\input{ciss380.tex}
+\input{yliow}
+\renewcommand\TITLE{Quiz 12}
+
+
+\newcommand\mybox[2]{
+\fbox{\begin{minipage}{#1in}\hfill\vspace{#2in}\end{minipage}}
+}
+
+\begin{document}
+\topmatter
+
+\newcommand\vv[2]{ \left\langle #1, #2 \right\rangle }
+\newcommand\vvv[3]{ \left\langle #1, #2, #3 \right\rangle }
+
+
+Unless otherwise stated, I always mean the {\it exact} value.
+That means you can leave your answer with the square root symbol.
+However you must simplify your answer.
+
+
+
+\begin{samepage}
+Q1. Compute the determinant of the following matrix:
+\[
+\begin{bmatrix}
+-2 & 5 \\
+2 & 2 \\
+\end{bmatrix}
+\]
+You may use any method. 
+
+ANSWER:
+\mybox{0.6}{0.4}
+\end{samepage}
+
+
+
+\begin{python}
+
+from yliow.matrix import *
+from fractions import Fraction
+m = [[-2,3,5],
+     [1,0,-2],
+     [0,2,-3]]
+for r in range(3):
+    for c in range(3):
+        m[r][c] = Fraction(m[r][c])
+m = Matrix(m)
+Matrix.latex = ''
+m.det()
+s = Matrix.latex
+if s.endswith('\n'): s = s[:-1]
+explanation = r"\begin{align*}%s\end{align*}" % s
+
+print r"""Q2. Compute the determinant by scanning the first row:
+\[
+%s
+\]
+You might want to check that it is the inverse.
+
+ANSWER:
+\mybox{0.6}{0.4}
+
+{\footnotesize
+}
+""" % (latex_bmatrix(m))
+
+\end{python}
+
+\begin{python}
+
+from yliow.matrix import *
+from fractions import Fraction
+m = [[1,0,0,-2],
+     [2,0,-2,0],
+     [1,1,-3,0],
+     [3,2,0,0],
+]
+for r in range(3):
+    for c in range(3):
+        m[r][c] = Fraction(m[r][c])
+m = Matrix(m)
+Matrix.latex = ''
+Matrix.omit_zero = True
+m.det()
+s = Matrix.latex
+if s.endswith('\n'): s = s[:-1]
+explanation = r"\begin{align*}%s\end{align*}" % s
+
+
+
+
+print r"""Q3. Compute the determinant by scanning the first row:
+\[
+%s
+\]
+You might want to check that it is the inverse.
+
+ANSWER:
+\mybox{0.6}{0.4}
+
+""" % (latex_bmatrix(m))
+\end{python}
+
+
+
+\end{document}

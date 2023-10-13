@@ -1,0 +1,120 @@
+\input{thispreamble.tex}
+
+\renewcommand\AUTHOR{jdoe5@cougars.ccis.edu} % CHANGE TO YOURS
+
+\begin{document}
+\topmattertwo
+
+\newcommand\vv[2]{ \left\langle #1, #2 \right\rangle }
+\newcommand\vvv[3]{ \left\langle #1, #2, #3 \right\rangle }
+
+Unless otherwise stated, I always mean the {\it exact} value.
+That means you can leave your answer with the square root symbol.
+However you must simplify your answer.
+
+%------------------------------------------------------------------------------
+\nextq 
+State the determinant of the following matrix:
+\[
+\begin{bmatrix}
+-2 & 5 \\
+ 2 & 2 \\
+\end{bmatrix}
+\]
+\\
+\ANSWER
+\begin{answerlong}
+
+\end{answerlong}
+
+%------------------------------------------------------------------------------
+\nextq
+Compute the determinant by scanning the first row:
+\[
+\begin{bmatrix}
+-2 & 3 &  5 \\
+ 1 & 0 & -2 \\
+ 0 & 2 & -3
+\end{bmatrix}
+\]
+\\
+\ANSWER
+\begin{answerlong}
+\begin{align*}
+\det
+\begin{bmatrix}
+-2 & 3 &  5 \\
+ 1 & 0 & -2 \\
+ 0 & 2 & -3
+\end{bmatrix}
+&= (+1)(-2)
+   \det
+   \begin{bmatrix}
+    ? & ?  \\
+    ? & ?  \\
+   \end{bmatrix}
+   +
+   (-1)3
+   \det
+   \begin{bmatrix}
+    ? & ?  \\
+    ? & ?  \\
+   \end{bmatrix}
+   +
+   (+1)5
+   \det
+   \begin{bmatrix}
+    ? & ?  \\
+    ? & ?  \\
+   \end{bmatrix}
+   \\
+&= (+1)(-2)(?)
+   +
+   (-1)3(?)
+   +
+   (+1)5(?)   \\
+&= ?
+\end{align*}
+\end{answerlong}
+(Replace each ? with a real number.)
+
+%------------------------------------------------------------------------------
+\nextq
+Let $\mathbf{A}$ be the matrix
+\[
+\begin{bmatrix}
+1  &  0  &   0  &  -2 \\
+2  &  0  &  -2  &   0 \\
+1  &  1  &  -3  &   0 \\
+3  &  2  &   0  &   0
+\end{bmatrix}
+\]
+Compute
+\[
+\det
+\left(
+\mathbf{A} - x \mathbf{I}_4
+\right)
+\]
+where $x$ is a variable.
+Here, $\mathbf{I}_4$ is the $4 \times 4$ identity matrix.
+You should get a polynomial in $x$.
+Simplify and write your polynomial so that the highest degree term
+appears first.
+(In \LaTeX, if you want the polynomial $x^4 - 2x + 5$,
+you type \verb!$x^4 - 2x + 5$!.)
+\\
+\ANSWER
+\begin{answerlong}
+$?$
+\end{answerlong}
+(The above is related the the concept of eigenvectors and eigenvalues.
+When computing the eigenvalues, traditionally the variable $x$ is
+denoted by $\lambda$. The eigen decomposition of a matrix is extremely
+important is studying the properties of the matrix and is used in
+machine learning, computer vision, differential equations, etc.)
+
+%------------------------------------------------------------------------------
+\newpage
+\input{instructions.tex}
+\end{document}

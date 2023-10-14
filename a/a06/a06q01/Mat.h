@@ -1,6 +1,51 @@
 #ifndef MAT_H
 #define MAT_H
 #include <iostream>
+#include <iomanip>
+#include <string>
+#include <exception>
+
+class IndexError: public std::exception
+{
+public: 
+    IndexError()
+    :error_code_(0)
+    {}
+    IndexError(int error_code)
+    :error_code_(error_code)
+    {}
+
+    const int error_code() const { return error_code_;}
+    void print_error_code()
+    {
+        switch (error_code_)
+        {
+        case 0:
+            std::cout << "something is messed up\n";
+            break;
+        case 1:
+            std::cout << "r is to big\n";
+            break;
+        case 2:
+            std::cout << "c is to big\n";
+            break;
+        case 3:
+            std::cout << "both r and c are to big\n";
+        
+        default:
+            break;
+        }
+    }
+private:
+    int error_code_; // 0 = unknow error, 1 = r is to large, 2 = c is to large, 3 = both r and c are to large
+};
+
+class SizeError: public std::exception
+{};
+
+class NotInvertibleError: public std::exception
+{};
+
 
 template <typename T>
 class Mat
@@ -19,6 +64,7 @@ public:
             }
         }
     }
+    
     Mat(const Mat & matrix)
     :rowsize_(matrix.rowsize_), colsize_(matrix.colsize_)
     {
@@ -35,24 +81,6 @@ public:
         }
     }
 
-    Mat<T> & operator=(const Mat & matrix)
-    {
-        rowsize_ = matrix.rowsize_;
-        colsize_ = matrix.colsize_;
-        if(p_ != NULL)
-        {
-            delete [] p_;
-            p_ = NULL;
-        }
-        p_ = new T[rowsize_ * colsize_];
-        // std::cout << p_ << std::endl;
-        for(int i = 0; i < (rowsize_ * colsize_); ++i)
-        {   
-            p_[i] = matrix.p_[i];
-        }
-        return *this;
-    }
-
     ~Mat()
     {
         if(p_ != NULL)
@@ -66,34 +94,32 @@ public:
         }
     }
     
+    const int rowsize() const { return rowsize_; }
+    const int colsize() const { return colsize_; }
 
-    bool operator==(const Mat & matrix)
-    {
-        if(rowsize_ != matrix.rowsize_ || colsize_ != matrix.colsize_)
-            return false;
-        for(int i = 0; i < (rowsize_ * colsize_); ++i)
-        {
-            if(p_[i] != matrix.p_[i])
-            return false;
-        }
-        return true;
-    }
-    bool operator!=(const Mat matrix)
-    {
-        return !(*this == matrix);
-    }
+    Mat<T> & operator=(const Mat & matrix);
+
+    bool operator==(const Mat & matrix);
+    bool operator!=(const Mat matrix);
+
+    T & operator()(int, int);
+    const T & operator()(int, int) const;
+
+    const Mat<T> & operator+=(const Mat & matrix);
+    const Mat<T> & operator-=(const Mat & matrix);
+    const Mat<T> & operator*=(const Mat & matrix);
+    const Mat<T> & operator/=(const Mat & matrix);
     
-    T & operator()(int r, int c) { return p_[(r*colsize_) + c]; }
-    const T & operator()(int r, int c) const { return p_[(r*colsize_) + c]; }
-    int rowsize() const { return rowsize_; }
-    int colsize() const { return colsize_; }
-    T*    p() const { return p_; }
+    Mat<T> operator+(Mat const& matrix) const;
+    Mat<T> operator-(Mat const& matrix) const;
+    Mat<T> operator*(Mat const& matrix) const;
+    Mat<T> operator/(Mat const& matrix) const;    
+    
 private:
     T *p_ = NULL;        // pointer to an array of type int
+    T error_return_ = -1;
     int rowsize_;   // number of rows in the matrix
     int colsize_;   // number of columns in the matrix
 };
-
-
 
 #endif

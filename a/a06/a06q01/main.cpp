@@ -4,28 +4,34 @@
 
 int main()
 {
-    float x[] = {1.1, 2.2, 3.3, 4.4};
-    Mat<float> m(2, 2, x);
-    m(1, 1) = 5.5;
-    float y = m(1, 1);
+    float x[] = {2 ,0, 1, 0,
+                  3, 1, 3, 0,
+                  1, 2, 0, 1,
+                  1, 0, 1, 1};
+
+    float y[] = {1, 0, 0,
+                 0, 0, 1,
+                 0, 1, 0};
+
+    Mat<float> m(4, 4, x);
+    Mat<float> n(3, 3, y);
+    std::cout << m << std::endl;
     try
     {
-        y = m(2, 3);
+        std::cout << m.adj() << m.det() << "\n\n";
+        std::cout << m.inverse() << std::endl;
+        std::cout << (m *= m.inverse()) << std::endl;
     }
     catch(IndexError & e)
     {
         e.print_error_code();
     }
-    std::cout << y << std::endl;
-    for(int r = 0; r < m.rowsize(); ++r)
+    catch(SizeError & e)
     {
-        std::string der = "";
-        std::cout << "|";
-        for(int c = 0; c < m.colsize(); ++c)
-        {
-            std::cout << der <<m(r, c); der = ", "; 
-        }
-        std::cout << "|\n";
+        e.print_error_code();
     }
+    
+
+    
     return 0;
 }

@@ -332,7 +332,20 @@ Mat<T> Mat<T>::inverse() const
             ret(row, col) = det * adj(row, col); 
         }
     }
+    return ret;
+}
 
+template <typename T, typename U>
+Mat<T> operator*(const U & c, const Mat<T> & matrix)
+{
+    Mat<T> ret(matrix.rowsize(), matrix.colsize());
+    for(int row = 0; row < matrix.rowsize(); ++row)
+    {
+        for(int col = 0; col < matrix.colsize(); ++col)
+        {
+             ret(row, col) =  c * matrix(row, col);
+        }
+    }
     return ret;
 }
 

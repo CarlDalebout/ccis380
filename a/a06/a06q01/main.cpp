@@ -18,6 +18,7 @@ int main()
     std::cout << m << std::endl;
     try
     {
+        m = 2 *     m;
         std::cout << m.adj() << m.det() << "\n\n";
         std::cout << m.inverse() << std::endl;
         std::cout << (m *= m.inverse()) << std::endl;

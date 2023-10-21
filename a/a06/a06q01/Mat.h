@@ -193,8 +193,8 @@ private:
     int colsize_;   // number of columns in the matrix
 };
 
-template <class T>
-Mat<T> operator*(const T & c, const Mat<T> & matrix);
+template <class T, typename U>
+Mat<T> operator*(const U & c, const Mat<T> & matrix);
 
 // template<class T>
 // std::istream& operator>>(std::istream& cin, Mat<T>& matrix)

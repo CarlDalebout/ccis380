@@ -70,12 +70,12 @@ void display()
     mygllib::draw_xz_plane();
     mygllib::draw_axes();
 
-    for (int z = 0; z >= -10; z -= 1)
+    for (int z = 10; z >= -10; z -= 1)
     {
-        glPushMatrix();
+        // glPushMatrix();
         glTranslatef(0, 0, z);
         triangle();
-        glPopMatrix();
+        // glPopMatrix();
     }
     
     glutSwapBuffers();

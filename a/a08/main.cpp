@@ -9,9 +9,21 @@
 #include "Material.h"
 #include "Light.h"
 
+
+
+
 mygllib::Light light;
 GLfloat light_model_ambient[] = {1.0, 1.0, 1.0, 1.0};
 int y_axis_angle = 0;
+
+class Body
+{
+public:
+    double mass;
+    vec4f p;
+    vec4f v;
+    float radius;
+}
 
 void init()
 {
@@ -22,7 +34,7 @@ void init()
     view.zNear() = 0.1f;
     view.lookat();    
 
-    glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClearDepth(1.0f);
     glEnable(GL_DEPTH_TEST);
     glShadeModel(GL_SMOOTH);
@@ -33,11 +45,8 @@ void init()
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
 }
 
-
-void draw_red_plastic_sphere(float radius)
+void draw_sphere(float radius)
 {
-    mygllib::Material mat(mygllib::Material::RED_PLASTIC);
-    mat.set();
     glutSolidSphere(radius, 20, 20);
 }
 
@@ -116,59 +125,25 @@ void draw_cube()
         // 4th run:
         // Experiment - Cull front face using GL_FRONT
 
-        glBegin(GL_TRIANGLE_STRIP);
+         glBegin(GL_QUADS);
         {
-            // back side of cube
-            glNormal3f(0, 0, -1);
-            glVertex3fv(p4); 
-            glVertex3fv(p7); 
-            glVertex3fv(p5); 
-            glVertex3fv(p6); 
-            glVertex3fv(p6);
-            
-            // 8th run: bottom of cube
-            glNormal3f(0, -1, 0);
-            glVertex3fv(p7); 
-            glVertex3fv(p7); 
-            glVertex3fv(p3); 
-            glVertex3fv(p6); 
-            glVertex3fv(p2);
- 
-            
-            // right side of cube
-            glNormal3f(1, 0, 0);
-            glVertex3fv(p5); 
-            glVertex3fv(p1); 
-            glVertex3fv(p4);
-            
-            // 7th run: top of cube 
-            // glNormal3f(0, 1, 0);
-                        
-            // left side of cube
-            // glNormal3f(-1, 0, 0);
-            
             // front side of cube
             // 5th run:
             // Experiment: try different normal vector
-            // glNormal3f(0, 0, 1); 
-            glVertex3fv(p0); 
-            glVertex3fv(p7); 
-            glVertex3fv(p3); 
-            glVertex3fv(p3);
-            glVertex3fv(p0); 
-            glVertex3fv(p2); 
-            glVertex3fv(p1); 
+            glNormal3f(0, 0, 1); 
+            glVertex3fv(p3); glVertex3fv(p2); glVertex3fv(p1); glVertex3fv(p0);
             
+            // right side of cube
+            
+            // back side of cube
+
+            // left side of cube
+            
+            // 7th run: top of cube 
+            
+            // 8th run: bottom of cube
         }
         glEnd();
-        
-        // Sphere in the box
-        glPushMatrix();
-        {
-            glTranslatef(0.5, 0.5, 0.5);
-            draw_red_plastic_sphere(0.2);
-        }
-        glPopMatrix();
         
         // This quad has red plastic material because of the red plastic ball
         // has set the material to red plastic.
@@ -195,9 +170,17 @@ void display()
         mygllib::draw_xz_plane();
         mygllib::Light::all_on();
 
-        mygllib::Material mat(mygllib::Material::CYAN_PLASTIC);
+        mygllib::Material mat(mygllib::Material::YELLOW_PLASTIC);
         mat.set();
-        draw_cube();
+        draw_sphere(1.0f);
+        glPushMatrix();
+        {
+            glTranslatef(1.5f, 0.0f, 0.0f);
+            mygllib::Material mat(mygllib::Material::WHITE_PLASTIC);
+            mat.set();
+            draw_sphere(0.1f);
+        }
+        glPopMatrix();
     }
     glPopMatrix();
     glutSwapBuffers();

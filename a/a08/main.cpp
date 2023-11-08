@@ -1,5 +1,6 @@
 #include <cmath>
 #include <iostream>
+#include <list>
 #include <GL/freeglut.h>
 #include "gl3d.h"
 #include "View.h"
@@ -8,31 +9,57 @@
 #include "Reshape.h"
 #include "Material.h"
 #include "Light.h"
+#include "Vec4f.h"
+#include "Body.h"
 
+const double G = 6.67408e-11;  // Newton's universal gravitational constant
+const char NAMES[10][32] = {"SUN",
+                            "MERCURY", "VENUS", "EARTH", "MARS",
+                            "JUPITER", "SATURN", "URANUS", "NEPTUNE", "PLUTO"};
+const double MASS[] = {1.989E30,
+                       0.330E24, 4.87E24, 5.97E24, 0.642E24,
+                       1898E24, 568E24, 86.8E24, 102E24, 0.0146E24};
+const double PERIHELION[] = {0,
+                             46.0E9, 107.5E9, 147.1E9, 206.6E9,
+                             740.5E9, 1352.6E9, 2741.3E9, 4444.5E9, 4436.8E9};
+const double APHELION[] = {0,
+                           69.8E9, 108.9E9, 152.1E9, 249.2E9,
+                           816.6E9, 1514.5E9, 3003.6E9, 4545.7E9, 7375.9E9};
+const float DIAMETER[] = {0,
+                           4879E9, 12104E9, 12756E9, 6792E9,
+                           142984E9, 120536E9, 51118E9, 49528E9, 2370E9};
 
 
 
 mygllib::Light light;
-GLfloat light_model_ambient[] = {1.0, 1.0, 1.0, 1.0};
+GLfloat light_model_ambient[] = {0.0, 0.0, 0.0, 1.0};
 int y_axis_angle = 0;
-
-class Body
-{
-public:
-    double mass;
-    vec4f p;
-    vec4f v;
-    float radius;
-}
 
 void init()
 {
     mygllib::View & view = *(mygllib::SingletonView::getInstance());
     view.eyex() = 3.0f;
-    view.eyey() = 1.5f;
-    view.eyez() = 4.0f;
+    view.eyey() = 300.0f;
+    view.eyez() = 3.0f;
     view.zNear() = 0.1f;
+    view.zFar() = 300.0f;
+    view.aspect() = 1;
     view.lookat();    
+
+    Body * body = new Body[10];
+    body[0].mass() = MASS[0];
+    body[0].radius() = DIAMETER[0];
+
+    for(int i = 1; i < 10; ++i)
+    {
+        body[i].mass() = MASS[i];
+        vec4f position(APHELION[i], 0.0f, 0.0f);
+        body[i].p() = position;
+        std::cout << sqrt(G*MASS[0]*((2.0/APHELION[i])-(2.0*(APHELION[i]+PERIHELION[i])))) << std::endl;
+        vec4f velocity(0, sqrt(G*MASS[0]*((2.0/APHELION[i])-(2.0*(APHELION[i]+PERIHELION[i])))), 0);
+        body[i].v() = velocity;
+        body[i].radius() = DIAMETER[i]/2;
+    }
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClearDepth(1.0f);
@@ -40,6 +67,7 @@ void init()
     glShadeModel(GL_SMOOTH);
     glEnable(GL_NORMALIZE);
     mygllib::Light::all_on();
+    light.y() = 300.0f;
     light.on();
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
@@ -48,6 +76,11 @@ void init()
 void draw_sphere(float radius)
 {
     glutSolidSphere(radius, 20, 20);
+}
+
+void print_body(Body & body)
+{
+
 }
 
 void draw_triangle_strip()
@@ -104,10 +137,10 @@ void draw_cube()
     static float p2[] = {1, 0, 1};
     static float p3[] = {0, 0, 1};
 
-    static float p4[] = {0, 1, 0};
-    static float p5[] = {1, 1, 0};
-    static float p6[] = {1, 0, 0};
-    static float p7[] = {0, 0, 0};
+    // static float p4[] = {0, 1, 0};
+    // static float p5[] = {1, 1, 0};
+    // static float p6[] = {1, 0, 0};
+    // static float p7[] = {0, 0, 0};
     
     {
         // 2nd run:
@@ -161,7 +194,6 @@ void draw_cube()
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     glPushMatrix();
     {
         glRotatef(y_axis_angle, 0, 1, 0);
@@ -169,16 +201,20 @@ void display()
         mygllib::draw_axes();
         mygllib::draw_xz_plane();
         mygllib::Light::all_on();
-
-        mygllib::Material mat(mygllib::Material::YELLOW_PLASTIC);
-        mat.set();
-        draw_sphere(1.0f);
         glPushMatrix();
         {
-            glTranslatef(1.5f, 0.0f, 0.0f);
+            glScalef(1e-12, 1e-12, 1e-12);
+            for(int i = 1; i < 10; i++)
+            {
+                glPushMatrix();
+                {
+                    glTranslatef(body[i].p.x())
+                }
+                glPopMatrix();
+            }
             mygllib::Material mat(mygllib::Material::WHITE_PLASTIC);
             mat.set();
-            draw_sphere(0.1f);
+            draw_sphere(DIAMETER[4]);
         }
         glPopMatrix();
     }
@@ -186,6 +222,22 @@ void display()
     glutSwapBuffers();
 }
 
+// Timer Function for glutTimerFunc()
+void animate(int someValue)
+{
+    vec4f F[10];
+    for(int i = 0; i < 10; ++i)
+    {
+        F[i] = vec4f(0, 0, 0);
+        for(int j = 0; j < 10; ++j)
+        {
+            if(j != i)
+            {
+                
+            }
+        }
+    }
+}
 
 void keyboard(unsigned char key, int x, int y)
 {
@@ -195,8 +247,8 @@ void keyboard(unsigned char key, int x, int y)
     {
         case 'x': view.eyex() -= 0.1; reset = true; break;
         case 'X': view.eyex() += 0.1; reset = true; break;
-        case 'y': view.eyey() += 0.1; reset = true; break;
-        case 'Y': view.eyey() -= 0.1; reset = true; break;
+        case 'y': view.eyey() += 10.0; reset = true; break;
+        case 'Y': view.eyey() -= 10.0; reset = true; break;
         case 'z': view.eyez() += 0.1; reset = true; break;
         case 'Z': view.eyez() -= 0.1; reset = true; break;
             
@@ -225,8 +277,7 @@ int main(int argc, char ** argv)
     std::cout << "eye control: x,X,y,Y,z,Z,R\n"; 
     std::cout << "light control: 1,2,3,4,5,6\n";
     std::cout << "see keyboard function for details\n";
-    
-    mygllib::init3d();
+    mygllib::init3d(700, 700);
     init();
 
     glutDisplayFunc(display);

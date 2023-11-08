@@ -133,7 +133,7 @@ void keyboard(unsigned char key, int x, int y)
 
         // light position
         case '!':
-            light_position[0] = -1;
+            light_positipon[0] = -1;
             light_position[1] = 0; 
             light_position[2] = 0;
             break;

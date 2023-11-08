@@ -28,6 +28,21 @@ namespace mygllib
         glutCreateWindow(WIN_TITLE);
     }
 
+    void init3d(int w, int h)
+    {
+            int argc = 0;
+        char ** argv = NULL;
+        glutInit(&argc, argv);    
+        glutInitWindowPosition(WIN_X, WIN_Y);
+        glutInitWindowSize(w, h);
+        glutInitDisplayMode(GLUT_DEPTH
+                            | GLUT_DOUBLE
+                            | GLUT_RGBA
+                            | GLUT_STENCIL
+            );
+        glutCreateWindow(WIN_TITLE);
+    }
+
     //-------------------------------------------------------------------------
     // Draw x-, y-, z- axes in red, green, blue respectively.
     // Lights should probably be turned off (if it's on) before calling this

@@ -28,6 +28,14 @@ main.exe: *.cpp *.h
 #
 #Keyboard.o: Keyboard.h Keyboard.cpp
 #	$(CXX) $(CXXFLAGS) Keyboard.cpp -c -o Keyboard.o
+# 
+Vec4f.o: Vec4f.h Vec4f.cpp
+	$(CXX) $(CXXFLAGS) Vec4f.cpp -c -o Vec4f.o
+
+Body.o: Body.h Body.cpp
+	$(CXX) $(CXXFLAGS) Body.cpp -c -o Body.o
+
+
 
 #------------------------------------------------------------------------------
 # Utilities

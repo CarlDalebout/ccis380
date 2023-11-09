@@ -26,8 +26,8 @@ const double APHELION[] = {0,
                            69.8E9, 108.9E9, 152.1E9, 249.2E9,
                            816.6E9, 1514.5E9, 3003.6E9, 4545.7E9, 7375.9E9};
 const float DIAMETER[] = {0,
-                           4879E9, 12104E9, 12756E9, 6792E9,
-                           142984E9, 120536E9, 51118E9, 49528E9, 2370E9};
+                           4879E6, 12104E6, 12756E6, 6792E6,
+                           142984E6, 120536E6, 51118E6, 49528E6, 2370E6};
 
 
 
@@ -63,7 +63,7 @@ void init()
         body[i].mass() = MASS[i];
         vec4f position(PERIHELION[i], 0.0f, 0.0f);
         body[i].p() = position;
-        vec4f velocity(0, sqrt(G*MASS[0]*((2.0/PERIHELION[i])-(1/(0.5*(APHELION[i]+PERIHELION[i]))))), 0);
+        vec4f velocity(0, 0, sqrt(G*MASS[0]*((2.0/PERIHELION[i])-(1/(0.5*(APHELION[i]+PERIHELION[i]))))));
         body[i].v() = velocity;
         body[i].radius() = DIAMETER[i]/2;
     }
@@ -201,7 +201,7 @@ void display()
         ;
         glPushMatrix();
         {
-            glScalef(1E-13, 1E-13, 1E-13);
+            glScalef(1E-10, 1E-10, 1E-10);
             mygllib::Material mat(mygllib::Material::WHITE_PLASTIC);
             mat.set();
             for(int i = 1; i < 10; i++)
@@ -209,7 +209,7 @@ void display()
                 glPushMatrix();
                 {   
                     // std::cout << "displaying " << NAMES[i] << " at position " << body[i].p().x() << " " << body[i].p().y() << " " << body[i].p().z() << std::endl;
-                    glTranslatef(body[i].p().x() * 1E3, body[i].p().y() * 1E3, body[i].p().z() * 1E3);
+                    glTranslatef(body[i].p().x(), body[i].p().y(), body[i].p().z());
                     glutSolidSphere(body[i].radius(), 25, 25);
                 }
                 glPopMatrix();
@@ -225,7 +225,7 @@ void display()
 void animate(int someValue)
 {
     vec4f F[10];
-    for(int i = 0; i < 10; ++i)
+    for(int i = 1; i < 10; ++i)
     {
         F[i] = vec4f(0, 0, 0);
         if(body[i].p().x() != 0)
@@ -235,15 +235,15 @@ void animate(int someValue)
         if(body[i].p().z() != 0)
         F[i].z() += G*(MASS[0]*MASS[i])/pow(body[i].p().z(), 2); 
         
-        // for(int j = 0; j < 10; ++j)
-        // {
-        //     if(j != i)
-        //     {
-        //         // F[i].x() += G*(MASS[j]*MASS[i])/pow(body[i].p().x(), 2); 
-        //         // F[i].y() += G*(MASS[j]*MASS[i])/pow(body[i].p().y(), 2); 
-        //         // F[i].z() += G*(MASS[j]*MASS[i])/pow(body[i].p().z(), 2); 
-        //     }
-        // }
+        for(int j = 0; j < 10; ++j)
+        {
+            if(j != i)
+            {
+                F[i].x() += G*(MASS[j]*MASS[i])/pow(body[i].p().x(), 2); 
+                F[i].y() += G*(MASS[j]*MASS[i])/pow(body[i].p().y(), 2); 
+                F[i].z() += G*(MASS[j]*MASS[i])/pow(body[i].p().z(), 2); 
+            }
+        }
     }
 
     for(int i = 1; i < 10; ++i)

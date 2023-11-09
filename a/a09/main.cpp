@@ -2,6 +2,7 @@
 #include <iostream>
 #include <list>
 #include <GL/freeglut.h>
+#include <time.h>
 #include "gl3d.h"
 #include "View.h"
 #include "SingletonView.h"
@@ -31,9 +32,11 @@ void init()
     view.aspect()   = 1;
     view.lookat();      
 
+    srand(time(NULL));
+    // heightmap.Diamond_Square();
     std::cout << heightmap;
 
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClearDepth(1.0f);
     glEnable(GL_DEPTH_TEST);
     glShadeModel(GL_SMOOTH);
@@ -45,7 +48,7 @@ void init()
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
 }
 
-void draw_triangle_strip(std::vector<float> top, std::vector<float> bottom)
+void draw_triangle_strip(std::vector<float> top, std::vector<float> bottom, float x_offset = 0, float z_offset = 0)
 {
     /*
        p0      p2     p3     p5
@@ -65,13 +68,17 @@ void draw_triangle_strip(std::vector<float> top, std::vector<float> bottom)
     // t1 = p2, p1, p3
     // t0 = p3, p4, p5
     {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glEnable(GL_COLOR_MATERIAL);
+        glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+        glFrontFace(GL_CW);
         glBegin(GL_TRIANGLE_STRIP);
         {
-            for(long unsigned int i = 0; i <= top.size(); ++i)
+            for(long unsigned int i = 0; i < top.size(); ++i)
             {
-                glVertex3f(i, top[i], 0);
-                glVertex3f(i, bottom[i], 1);
+                glVertex3f(x_offset + i, top[i], z_offset);
+                glVertex3f(x_offset + i, bottom[i], z_offset + 1);
             }
         }
         glEnd();
@@ -80,9 +87,31 @@ void draw_triangle_strip(std::vector<float> top, std::vector<float> bottom)
 
 void draw_triangle_mesh(std::vector<std::vector<float>> heightmap)
 {
-    
+    /*
+       p0      p1     p2     p3
+        +------+------+------+
+        |     /|     /|     /|
+        |    / |    / |    / |
+        |   /  |   /  |   /  |
+        |  /   |  /   |  /   |
+        | /    | /    | /    |
+        |/     |/     |/     |
+        +------+------+------+
+       p4      p5     p6     p7
+        |     /|     /|     /|
+        |    / |    / |    / |
+        |   /  |   /  |   /  |
+        |  /   |  /   |  /   |
+        | /    | /    | /    |
+        |/     |/     |/     |
+        +------+------+------+
+       p8      p9     p10    p11
+    */
+    for(long unsigned int i = 1; i < heightmap.size(); ++i)
+    {
+        draw_triangle_strip(heightmap[i-1], heightmap[i], 0, i-1);
+    }
 }
-
 
 void draw_cube()
 {
@@ -168,7 +197,6 @@ void draw_cube()
     }   
 }
 
-
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -181,7 +209,10 @@ void display()
         mygllib::Light::all_on();
         glPushMatrix();
         {
-            draw_triangle_strip(heightmap.heightmap()[0], heightmap.heightmap()[1]);
+            glColor3f(0.5, 0.5, 0.5);
+            // mygllib::Material mat(mygllib::Material::WHITE_PLASTIC);
+            // mat.set();
+            draw_triangle_mesh(heightmap.heightmap());
         }
         glPopMatrix();
     }
@@ -189,13 +220,13 @@ void display()
     glutSwapBuffers();
 }
 
-// Timer Function for glutTimerFunc()
-void animate(int someValue)
-{
+// // Timer Function for glutTimerFunc()
+// void animate(int someValue)
+// {
     
-    glutPostRedisplay();
-    glutTimerFunc(1, animate, 1);
-}
+//     glutPostRedisplay();
+//     glutTimerFunc(1, animate, 1);
+// }
 
 void keyboard(unsigned char key, int x, int y)
 {
@@ -203,12 +234,12 @@ void keyboard(unsigned char key, int x, int y)
     bool reset = false;
     switch (key)
     {
-        case 'x': view.eyex() -= 5.0; reset = true; break;
-        case 'X': view.eyex() += 5.0; reset = true; break;
-        case 'y': view.eyey() += 5.0; reset = true; break;
-        case 'Y': view.eyey() -= 5.0; reset = true; break;
-        case 'z': view.eyez() += 5.0; reset = true; break;
-        case 'Z': view.eyez() -= 5.0; reset = true; break;
+        case 'x': view.eyex() -= 0.1; reset = true; break;
+        case 'X': view.eyex() += 0.1; reset = true; break;
+        case 'y': view.eyey() += 0.1; reset = true; break;
+        case 'Y': view.eyey() -= 0.1; reset = true; break;
+        case 'z': view.eyez() += 0.1; reset = true; break;
+        case 'Z': view.eyez() -= 0.1; reset = true; break;
             
         case 'r': y_axis_angle += 1; reset = true; break;
         case 'R': y_axis_angle -= 1; reset = true; break;
@@ -243,7 +274,7 @@ int main(int argc, char ** argv)
     glutDisplayFunc(display);
     glutReshapeFunc(mygllib::Reshape::reshape);
     glutKeyboardFunc(keyboard);
-    glutTimerFunc(1, animate, 1);
+    // glutTimerFunc(1, animate, 1);
     glutMainLoop();
     
     return 0;

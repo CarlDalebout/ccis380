@@ -21,6 +21,7 @@ public:
     std::vector<std::vector<float>> & heightmap()       {return heightmap_;}
     std::vector<std::vector<float>>   heightmap() const {return heightmap_;}
 
+    void                              Diamond_Square();
     Heightmap                         resize(int n);
 
 private:

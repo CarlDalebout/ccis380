@@ -12,7 +12,7 @@
 #include "Vec4f.h"
 #include "Body.h"
 
-const double G = 6.67408e-11;  // Newton's universal gravitational constant
+const double G = 6.67408E-11;  // Newton's universal gravitational constant
 const char NAMES[10][32] = {"SUN",
                             "MERCURY", "VENUS", "EARTH", "MARS",
                             "JUPITER", "SATURN", "URANUS", "NEPTUNE", "PLUTO"};
@@ -35,28 +35,35 @@ mygllib::Light light;
 GLfloat light_model_ambient[] = {0.0, 0.0, 0.0, 1.0};
 int y_axis_angle = 0;
 
+int pick_body = 1;
+
+Body * body;
+double dt = 300000;
+
+
 void init()
 {
     mygllib::View & view = *(mygllib::SingletonView::getInstance());
-    view.eyex() = 3.0f;
+    view.eyex() = -150.0f;
     view.eyey() = 300.0f;
-    view.eyez() = 3.0f;
+    view.eyez() = 100.0f;
     view.zNear() = 0.1f;
-    view.zFar() = 300.0f;
+    view.zFar() = 3000.0f;
     view.aspect() = 1;
     view.lookat();    
 
-    Body * body = new Body[10];
+    body = new Body[10];
+    
+    // SUN
     body[0].mass() = MASS[0];
     body[0].radius() = DIAMETER[0];
 
     for(int i = 1; i < 10; ++i)
     {
         body[i].mass() = MASS[i];
-        vec4f position(APHELION[i], 0.0f, 0.0f);
+        vec4f position(PERIHELION[i], 0.0f, 0.0f);
         body[i].p() = position;
-        std::cout << sqrt(G*MASS[0]*((2.0/APHELION[i])-(2.0*(APHELION[i]+PERIHELION[i])))) << std::endl;
-        vec4f velocity(0, sqrt(G*MASS[0]*((2.0/APHELION[i])-(2.0*(APHELION[i]+PERIHELION[i])))), 0);
+        vec4f velocity(0, sqrt(G*MASS[0]*((2.0/PERIHELION[i])-(1/(0.5*(APHELION[i]+PERIHELION[i]))))), 0);
         body[i].v() = velocity;
         body[i].radius() = DIAMETER[i]/2;
     }
@@ -71,16 +78,6 @@ void init()
     light.on();
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
-}
-
-void draw_sphere(float radius)
-{
-    glutSolidSphere(radius, 20, 20);
-}
-
-void print_body(Body & body)
-{
-
 }
 
 void draw_triangle_strip()
@@ -199,22 +196,24 @@ void display()
         glRotatef(y_axis_angle, 0, 1, 0);
         mygllib::Light::all_off();
         mygllib::draw_axes();
-        mygllib::draw_xz_plane();
-        mygllib::Light::all_on();
+        // mygllib::draw_xz_plane();
+        mygllib::Light::all_on()
+        ;
         glPushMatrix();
         {
-            glScalef(1e-12, 1e-12, 1e-12);
+            glScalef(1E-13, 1E-13, 1E-13);
+            mygllib::Material mat(mygllib::Material::WHITE_PLASTIC);
+            mat.set();
             for(int i = 1; i < 10; i++)
             {
                 glPushMatrix();
-                {
-                    glTranslatef(body[i].p.x())
+                {   
+                    // std::cout << "displaying " << NAMES[i] << " at position " << body[i].p().x() << " " << body[i].p().y() << " " << body[i].p().z() << std::endl;
+                    glTranslatef(body[i].p().x() * 1E3, body[i].p().y() * 1E3, body[i].p().z() * 1E3);
+                    glutSolidSphere(body[i].radius(), 25, 25);
                 }
                 glPopMatrix();
             }
-            mygllib::Material mat(mygllib::Material::WHITE_PLASTIC);
-            mat.set();
-            draw_sphere(DIAMETER[4]);
         }
         glPopMatrix();
     }
@@ -229,14 +228,41 @@ void animate(int someValue)
     for(int i = 0; i < 10; ++i)
     {
         F[i] = vec4f(0, 0, 0);
-        for(int j = 0; j < 10; ++j)
-        {
-            if(j != i)
-            {
-                
-            }
-        }
+        if(body[i].p().x() != 0)
+        F[i].x() += G*(MASS[0]*MASS[i])/pow(body[i].p().x(), 2); 
+        if(body[i].p().y() != 0)
+        F[i].y() += G*(MASS[0]*MASS[i])/pow(body[i].p().y(), 2); 
+        if(body[i].p().z() != 0)
+        F[i].z() += G*(MASS[0]*MASS[i])/pow(body[i].p().z(), 2); 
+        
+        // for(int j = 0; j < 10; ++j)
+        // {
+        //     if(j != i)
+        //     {
+        //         // F[i].x() += G*(MASS[j]*MASS[i])/pow(body[i].p().x(), 2); 
+        //         // F[i].y() += G*(MASS[j]*MASS[i])/pow(body[i].p().y(), 2); 
+        //         // F[i].z() += G*(MASS[j]*MASS[i])/pow(body[i].p().z(), 2); 
+        //     }
+        // }
     }
+
+    for(int i = 1; i < 10; ++i)
+    {
+        double ax = F[i].x() / MASS[i];
+        double ay = F[i].y() / MASS[i];
+        double az = F[i].z() / MASS[i];
+        
+        body[i].v().x() = body[i].v().x() + ax * dt;
+        body[i].v().y() = body[i].v().y() + ay * dt;
+        body[i].v().z() = body[i].v().z() + az * dt;
+        
+        body[i].p().x() = body[i].p().x() + body[i].v().x() * dt;
+        body[i].p().y() = body[i].p().y() + body[i].v().y() * dt;
+        body[i].p().z() = body[i].p().z() + body[i].v().z() * dt;
+        
+    }
+    glutPostRedisplay();
+    glutTimerFunc(1, animate, 1);
 }
 
 void keyboard(unsigned char key, int x, int y)
@@ -245,12 +271,12 @@ void keyboard(unsigned char key, int x, int y)
     bool reset = false;
     switch (key)
     {
-        case 'x': view.eyex() -= 0.1; reset = true; break;
-        case 'X': view.eyex() += 0.1; reset = true; break;
-        case 'y': view.eyey() += 10.0; reset = true; break;
-        case 'Y': view.eyey() -= 10.0; reset = true; break;
-        case 'z': view.eyez() += 0.1; reset = true; break;
-        case 'Z': view.eyez() -= 0.1; reset = true; break;
+        case 'x': view.eyex() -= 5.0; reset = true; break;
+        case 'X': view.eyex() += 5.0; reset = true; break;
+        case 'y': view.eyey() += 5.0; reset = true; break;
+        case 'Y': view.eyey() -= 5.0; reset = true; break;
+        case 'z': view.eyez() += 5.0; reset = true; break;
+        case 'Z': view.eyez() -= 5.0; reset = true; break;
             
         case 'r': y_axis_angle += 1; reset = true; break;
         case 'R': y_axis_angle -= 1; reset = true; break;
@@ -261,6 +287,9 @@ void keyboard(unsigned char key, int x, int y)
         case '4': light.y() -= 0.1; reset = true; break;
         case '5': light.z() += 0.1; reset = true; break;
         case '6': light.z() -= 0.1; reset = true; break;
+        
+        case '+': pick_body = (pick_body % 9) + 1; reset = true; break;
+        case '-': pick_body = (pick_body % 9) - 1; reset = true; break;
     }
     if (reset)
     {
@@ -277,12 +306,22 @@ int main(int argc, char ** argv)
     std::cout << "eye control: x,X,y,Y,z,Z,R\n"; 
     std::cout << "light control: 1,2,3,4,5,6\n";
     std::cout << "see keyboard function for details\n";
+
     mygllib::init3d(700, 700);
     init();
+    if(body[1].p().x() != 0)
+    std::cout << G*(MASS[0]*MASS[1])/pow(body[1].p().x(), 2) << std::endl;
+    if(body[1].p().y() != 0)
+    std::cout << G*(MASS[0]*MASS[1])/pow(body[1].p().y(), 2) << std::endl;
+    if(body[1].p().z() != 0)
+    std::cout << G*(MASS[0]*MASS[1])/pow(body[1].p().z(), 2) << std::endl;
+
+
 
     glutDisplayFunc(display);
     glutReshapeFunc(mygllib::Reshape::reshape);
     glutKeyboardFunc(keyboard);
+    glutTimerFunc(1, animate, 1);
     glutMainLoop();
     
     return 0;

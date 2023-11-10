@@ -18,6 +18,8 @@ public:
         heightmap_ = temp;
     }
 
+    int & n()       {return n_;}
+    int   n() const {return n_;}
     std::vector<std::vector<float>> & heightmap()       {return heightmap_;}
     std::vector<std::vector<float>>   heightmap() const {return heightmap_;}
 

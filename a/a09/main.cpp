@@ -17,7 +17,7 @@ mygllib::Light light;
 GLfloat light_model_ambient[] = {0.0, 0.0, 0.0, 1.0};
 int y_axis_angle = 0;
 
-int n = 2;
+int n = 7;
 Heightmap heightmap(n);
 
 
@@ -25,16 +25,17 @@ void init()
 {
     mygllib::View & view = *(mygllib::SingletonView::getInstance());
     view.eyex()     = -5.0f;
-    view.eyey()     = 10.0f;
+    view.eyey()     = 100.0f;
     view.eyez()     = 5.0f;
     view.zNear()    = 0.1f;
-    view.zFar()     = 50.0f;
+    view.zFar()     = 300.0f;
+
     view.aspect()   = 1;
     view.lookat();      
 
     srand(time(NULL));
     // heightmap.Diamond_Square();
-    std::cout << heightmap;
+    // std::cout << heightmap;
 
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClearDepth(1.0f);
@@ -85,10 +86,10 @@ void draw_triangle_strip(std::vector<float> top, std::vector<float> bottom, floa
     }
 }
 
-void draw_triangle_mesh(std::vector<std::vector<float>> heightmap)
+void draw_triangle_mesh(std::vector<std::vector<float>> heightmap, int x_offset = 0, int z_offset = 0)
 {
     /*
-       p0      p1     p2     p3
+       p0      p2     p4     p6
         +------+------+------+
         |     /|     /|     /|
         |    / |    / |    / |
@@ -97,20 +98,35 @@ void draw_triangle_mesh(std::vector<std::vector<float>> heightmap)
         | /    | /    | /    |
         |/     |/     |/     |
         +------+------+------+
-       p4      p5     p6     p7
-        |     /|     /|     /|
+       p1      p3     p5     p7 p8
+       p9     /|     /|     /|
         |    / |    / |    / |
         |   /  |   /  |   /  |
         |  /   |  /   |  /   |
         | /    | /    | /    |
         |/     |/     |/     |
         +------+------+------+
-       p8      p9     p10    p11
+       p10      p9     p10    p11
     */
-    for(long unsigned int i = 1; i < heightmap.size(); ++i)
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glEnable(GL_COLOR_MATERIAL);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    glFrontFace(GL_CW);
+    glBegin(GL_TRIANGLE_STRIP);
+    for(long unsigned int i = 0; i < heightmap.size()-1; ++i)
     {
-        draw_triangle_strip(heightmap[i-1], heightmap[i], 0, i-1);
+        // draw_triangle_strip(heightmap[i-1], heightmap[i], 0, i-1);       
+        for(long unsigned int j = 0; j < heightmap[i].size(); ++j)
+        {
+            glVertex3f(x_offset + j, heightmap[i][j], z_offset + i);
+            glVertex3f(x_offset + j, heightmap[i+1][j], z_offset + i+1);
+        }
+            glVertex3f(x_offset + heightmap[i].size()-1, heightmap[i+1][heightmap[i].size()-1], z_offset + i + 1);
+            glVertex3f(x_offset                        , heightmap[i+1][0], z_offset + i + 1);
+
     }
+    glEnd();
 }
 
 void draw_cube()
@@ -205,13 +221,14 @@ void display()
         glRotatef(y_axis_angle, 0, 1, 0);
         mygllib::Light::all_off();
         mygllib::draw_axes();
-        // mygllib::draw_xz_plane();
+        mygllib::draw_xz_plane();
         mygllib::Light::all_on();
         glPushMatrix();
         {
-            glColor3f(0.5, 0.5, 0.5);
+            glColor3f(0, 0, 1);
             // mygllib::Material mat(mygllib::Material::WHITE_PLASTIC);
             // mat.set();
+            glTranslatef(-pow(2, n)/2, 0, -pow(2, n)/2);
             draw_triangle_mesh(heightmap.heightmap());
         }
         glPopMatrix();

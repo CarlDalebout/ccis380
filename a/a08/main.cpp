@@ -248,17 +248,17 @@ void animate(int someValue)
 
     for(int i = 1; i < 10; ++i)
     {
-        double ax = F[i].x() / MASS[i];
-        double ay = F[i].y() / MASS[i];
-        double az = F[i].z() / MASS[i];
+        // double ax = F[i].x() / MASS[i];
+        // double ay = F[i].y() / MASS[i];
+        // double az = F[i].z() / MASS[i];
         
-        body[i].v().x() = body[i].v().x() + ax * dt;
-        body[i].v().y() = body[i].v().y() + ay * dt;
-        body[i].v().z() = body[i].v().z() + az * dt;
+        // body[i].v().x() = body[i].v().x() + ax * dt;
+        // body[i].v().y() = body[i].v().y() + ay * dt;
+        // body[i].v().z() = body[i].v().z() + az * dt;
         
-        body[i].p().x() = body[i].p().x() + body[i].v().x() * dt;
-        body[i].p().y() = body[i].p().y() + body[i].v().y() * dt;
-        body[i].p().z() = body[i].p().z() + body[i].v().z() * dt;
+        // body[i].p().x() = body[i].p().x() + body[i].v().x() * dt;
+        // body[i].p().y() = body[i].p().y() + body[i].v().y() * dt;
+        // body[i].p().z() = body[i].p().z() + body[i].v().z() * dt;
         
     }
     glutPostRedisplay();

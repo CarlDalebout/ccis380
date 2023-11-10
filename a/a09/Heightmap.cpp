@@ -10,10 +10,10 @@ void       Heightmap::Diamond_Square()
     float M = 0.25 * N; 
     float roughness = 1.5;
 
-    heightmap_[0][0]        = ((float)rand() / RAND_MAX * M*2) - M;
-    heightmap_[0][N-1]      = ((float)rand() / RAND_MAX * M*2) - M;
-    heightmap_[N-1][0]      = ((float)rand() / RAND_MAX * M*2) - M;
-    heightmap_[N-1][N-1]    = ((float)rand() / RAND_MAX * M*2) - M;
+    heightmap_[0][0]        = 1;//((float)rand() / RAND_MAX * M*2) - M;
+    heightmap_[0][N-1]      = 1;//((float)rand() / RAND_MAX * M*2) - M;
+    heightmap_[N-1][0]      = 1;//((float)rand() / RAND_MAX * M*2) - M;
+    heightmap_[N-1][N-1]    = 1;//((float)rand() / RAND_MAX * M*2) - M;
 
     for(int i = n_; i > 1; --i)
     {

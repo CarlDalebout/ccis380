@@ -17,15 +17,15 @@ mygllib::Light light;
 GLfloat light_model_ambient[] = {0.0, 0.0, 0.0, 1.0};
 int y_axis_angle = 0;
 
-int n = 6;
+int n = 3;
 Heightmap heightmap(n);
-
+double roughness = 1;
 
 void init()
 {
     mygllib::View & view = *(mygllib::SingletonView::getInstance());
     view.eyex()     = -5.0f;
-    view.eyey()     = 30.0f;
+    view.eyey()     = 20.0f;
     view.eyez()     = 5.0f;
     view.zNear()    = 0.1f;
     view.zFar()     = 300.0f;
@@ -34,10 +34,9 @@ void init()
     view.lookat();      
 
     srand(time(NULL));
-    heightmap.Diamond_Square(0.75);
-    // std::cout << heightmap;
+    heightmap.Diamond_Square(roughness);
 
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClearDepth(1.0f);
     glEnable(GL_DEPTH_TEST);
     glShadeModel(GL_SMOOTH);
@@ -79,7 +78,6 @@ void draw_triangle_mesh(std::vector<std::vector<double>> heightmap, int x_offset
     glBegin(GL_TRIANGLE_STRIP);
     for(long unsigned int i = 0; i < heightmap.size()-1; ++i)
     {
-        // draw_triangle_strip(heightmap[i-1], heightmap[i], 0, i-1);       
         for(long unsigned int j = 0; j < heightmap[i].size(); ++j)
         {
             glVertex3f(x_offset + j, heightmap[i][j], z_offset + i);
@@ -90,90 +88,6 @@ void draw_triangle_mesh(std::vector<std::vector<double>> heightmap, int x_offset
 
     }
     glEnd();
-}
-
-void draw_cube()
-{
-    /*
-                y
-                
-                |
-                |
-                |
-                |
-             p4 +--------+ p5
-               /|       /|
-              / |      / |
-           p0+--------+p1|
-             |  |     |  |
-             |p7+-----|--+ p6 ------------- x
-             | /      | /
-             |/       |/
-             +--------+
-            p3        p2
-           /
-          /
-         /
-         
-       z
-       
-    */
-    static float p0[] = {0, 1, 1};
-    static float p1[] = {1, 1, 1};
-    static float p2[] = {1, 0, 1};
-    static float p3[] = {0, 0, 1};
-
-    // static float p4[] = {0, 1, 0};
-    // static float p5[] = {1, 1, 0};
-    // static float p6[] = {1, 0, 0};
-    // static float p7[] = {0, 0, 0};
-    
-    {
-        // 2nd run:
-        // Experiment: Change GL_CCW to GL_CW (and then change back)
-        // CCW = counter clockwise
-        // CW = clockwise
-        glFrontFace(GL_CCW); 
-
-        // 3rd run:
-        // Experiment:
-        // - Cull back face using GL_BACK
-        // glEnable(GL_CULL_FACE);
-        // glCullFace(GL_BACK);
-       
-        // 4th run:
-        // Experiment - Cull front face using GL_FRONT
-
-         glBegin(GL_QUADS);
-        {
-            // front side of cube
-            // 5th run:
-            // Experiment: try different normal vector
-            glNormal3f(0, 0, 1); 
-            glVertex3fv(p3); glVertex3fv(p2); glVertex3fv(p1); glVertex3fv(p0);
-            
-            // right side of cube
-            
-            // back side of cube
-
-            // left side of cube
-            
-            // 7th run: top of cube 
-            
-            // 8th run: bottom of cube
-        }
-        glEnd();
-        
-        // This quad has red plastic material because of the red plastic ball
-        // has set the material to red plastic.
-        glTranslatef(1.5, 0, 0);
-        glBegin(GL_QUADS);
-        {
-            glNormal3f(0, 0, 1);
-            glVertex3fv(p0); glVertex3fv(p1); glVertex3fv(p2); glVertex3fv(p3);
-        }
-        glEnd();
-    }   
 }
 
 void display()
@@ -189,9 +103,8 @@ void display()
         glPushMatrix();
         {
             glColor3f(0.9f, 0.9f, 0.9f);
-            // mygllib::Material mat(mygllib::Material::WHITE_PLASTIC);
-            // mat.set();
-            glTranslatef(-pow(2, n)/2, 5, -pow(2, n)/2);
+            glTranslatef(-pow(2, n)/2, 0, -pow(2, n)/2);
+            // std::cout << heightmap << std::endl;
             draw_triangle_mesh(heightmap.heightmap());
         }
         glPopMatrix();
@@ -201,7 +114,7 @@ void display()
 }
 
 // // Timer Function for glutTimerFunc()
-// void animate(int someValue)
+// void animate(int someValue)-
 // {
     
 //     glutPostRedisplay();
@@ -224,7 +137,29 @@ void keyboard(unsigned char key, int x, int y)
         case 'r': y_axis_angle += 1; reset = true; break;
         case 'R': y_axis_angle -= 1; reset = true; break;
         
-        case 'n': view.eyex() -= view.eyex()/(view.eyex()*10); view.eyey() -= view.eyey()/(view.eyey()*10); view.eyez() -= view.eyez()/(view.eyez()*10); reset = true; break;
+        case 'n':
+        {
+            double product = sqrt(pow(view.eyex(), 2) + pow(view.eyey(), 2) + pow(view.eyez(), 2));
+            view.eyex() -= view.eyex()/(product); 
+            view.eyey() -= view.eyey()/(product); 
+            view.eyez() -= view.eyez()/(product); 
+            reset = true;
+        } break;
+        case 'N':
+        {
+            double product = sqrt(pow(view.eyex(), 2) + pow(view.eyey(), 2) + pow(view.eyez(), 2));
+            view.eyex() += view.eyex()/(product); 
+            view.eyey() += view.eyey()/(product); 
+            view.eyez() += view.eyez()/(product); 
+            reset = true;
+        } break;
+
+        case '-': n -= 1; heightmap = heightmap.resize(n); heightmap.Diamond_Square(roughness); reset = true; break;
+        case '+': n += 1; heightmap = heightmap.resize(n); heightmap.Diamond_Square(roughness); reset = true; break;
+
+        case 's': roughness -= 0.1; heightmap.Diamond_Square(roughness); reset = true; break;
+        case 'S': roughness += 0.1; heightmap.Diamond_Square(roughness); reset = true; break;
+
         case '1': light.x() += 0.1; reset = true; break;
         case '2': light.x() -= 0.1; reset = true; break;
         case '3': light.y() += 0.1; reset = true; break;

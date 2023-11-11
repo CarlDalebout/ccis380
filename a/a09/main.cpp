@@ -17,7 +17,7 @@ mygllib::Light light;
 GLfloat light_model_ambient[] = {0.0, 0.0, 0.0, 1.0};
 int y_axis_angle = 0;
 
-int n = 7;
+int n = 6;
 Heightmap heightmap(n);
 
 
@@ -25,7 +25,7 @@ void init()
 {
     mygllib::View & view = *(mygllib::SingletonView::getInstance());
     view.eyex()     = -5.0f;
-    view.eyey()     = 100.0f;
+    view.eyey()     = 30.0f;
     view.eyez()     = 5.0f;
     view.zNear()    = 0.1f;
     view.zFar()     = 300.0f;
@@ -34,7 +34,7 @@ void init()
     view.lookat();      
 
     srand(time(NULL));
-    // heightmap.Diamond_Square();
+    heightmap.Diamond_Square(0.75);
     // std::cout << heightmap;
 
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -49,44 +49,7 @@ void init()
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
 }
 
-void draw_triangle_strip(std::vector<float> top, std::vector<float> bottom, float x_offset = 0, float z_offset = 0)
-{
-    /*
-       p0      p2     p3     p5
-        +------+------+------+
-        |     /|     /|     /|
-        |    / |    / |    / |
-        |   /  |   /  |   /  |
-        |  /   |  /   |  /   |
-        | /    | /    | /    |
-        |/     |/     |/     |
-        +------+------+------+
-       p1      p3     p4     p6
-    */
-
-    // p0, p1, p2, p3, p4, p5, p6, p7
-    // t0 = p0, p1, p2
-    // t1 = p2, p1, p3
-    // t0 = p3, p4, p5
-    {
-        // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glEnable(GL_COLOR_MATERIAL);
-        glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-        glFrontFace(GL_CW);
-        glBegin(GL_TRIANGLE_STRIP);
-        {
-            for(long unsigned int i = 0; i < top.size(); ++i)
-            {
-                glVertex3f(x_offset + i, top[i], z_offset);
-                glVertex3f(x_offset + i, bottom[i], z_offset + 1);
-            }
-        }
-        glEnd();
-    }
-}
-
-void draw_triangle_mesh(std::vector<std::vector<float>> heightmap, int x_offset = 0, int z_offset = 0)
+void draw_triangle_mesh(std::vector<std::vector<double>> heightmap, int x_offset = 0, int z_offset = 0)
 {
     /*
        p0      p2     p4     p6
@@ -108,8 +71,8 @@ void draw_triangle_mesh(std::vector<std::vector<float>> heightmap, int x_offset 
         +------+------+------+
        p10      p9     p10    p11
     */
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glFrontFace(GL_CW);
@@ -221,14 +184,14 @@ void display()
         glRotatef(y_axis_angle, 0, 1, 0);
         mygllib::Light::all_off();
         mygllib::draw_axes();
-        mygllib::draw_xz_plane();
+        // mygllib::draw_xz_plane();
         mygllib::Light::all_on();
         glPushMatrix();
         {
-            glColor3f(0, 0, 1);
+            glColor3f(0.9f, 0.9f, 0.9f);
             // mygllib::Material mat(mygllib::Material::WHITE_PLASTIC);
             // mat.set();
-            glTranslatef(-pow(2, n)/2, 0, -pow(2, n)/2);
+            glTranslatef(-pow(2, n)/2, 5, -pow(2, n)/2);
             draw_triangle_mesh(heightmap.heightmap());
         }
         glPopMatrix();
@@ -261,6 +224,7 @@ void keyboard(unsigned char key, int x, int y)
         case 'r': y_axis_angle += 1; reset = true; break;
         case 'R': y_axis_angle -= 1; reset = true; break;
         
+        case 'n': view.eyex() -= view.eyex()/(view.eyex()*10); view.eyey() -= view.eyey()/(view.eyey()*10); view.eyez() -= view.eyez()/(view.eyez()*10); reset = true; break;
         case '1': light.x() += 0.1; reset = true; break;
         case '2': light.x() -= 0.1; reset = true; break;
         case '3': light.y() += 0.1; reset = true; break;

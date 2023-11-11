@@ -1,4 +1,5 @@
 #include <string>
+#include <iomanip>
 #include <cmath>
 #include "Heightmap.h"
 
@@ -6,47 +7,130 @@
 
 void       Heightmap::Diamond_Square()
 {   
-    int N = pow(n_, 2) + 1;
-    float M = 0.25 * N; 
-    float roughness = 1.5;
+    int N = pow(2, n_) + 1;
+    double M = 0.25 * N; 
+    double roughness = 0.5;
 
-    heightmap_[0][0]        = 1;//((float)rand() / RAND_MAX * M*2) - M;
-    heightmap_[0][N-1]      = 1;//((float)rand() / RAND_MAX * M*2) - M;
-    heightmap_[N-1][0]      = 1;//((float)rand() / RAND_MAX * M*2) - M;
-    heightmap_[N-1][N-1]    = 1;//((float)rand() / RAND_MAX * M*2) - M;
+    heightmap_[0][0]        = ((double)rand() / RAND_MAX * M*2) - M;
+    heightmap_[0][N-1]      = ((double)rand() / RAND_MAX * M*2) - M;
+    heightmap_[N-1][0]      = ((double)rand() / RAND_MAX * M*2) - M;
+    heightmap_[N-1][N-1]    = ((double)rand() / RAND_MAX * M*2) - M;
 
-    for(int w = pow(2, n_); w > 0; w /= 4)
+    int c = 0;
+    for(int w = pow(2, n_); w >= 2; w /= 2)
     {
-        int S = pow(2, n_) / w;
-        float average = 0;
+        int S = pow(2, c);
+        double average = 0;
         int row = 0;
         int col = 0;
-
+        std::cout << c << "\n";
         // Diamond Step
         for(int j = 0; j < S; ++j)
-        {
+        {   
             average = 0;
-            if(j == S/2)
+            if(S != 1 and col == heightmap_.size()-1)
             {
                 row += w;
                 col  = 0;
             }
+            std::cout << "Diamond Step working on square " << j << " of " << S << " Squares | w: " << w << ", col: " << col  << ", row: " << row <<"\n";
+            
             average += heightmap_[row][col];
             average += heightmap_[row][col+w];
-            average += heightmap_[row+w][col+w];
             average += heightmap_[row+w][col];
-            heightmap_[w/2][w/2] = average /2 + 1;//((float)rand() / RAND_MAX * M*2) - M;
+            average += heightmap_[row+w][col+w];
+            heightmap_[row + w/2][col + w/2] = average/4 + (double)rand() / RAND_MAX * M*2 - M;
             col += w;
         } 
-
-        average = 0;
+        std::cout << "diamond Step\n" << *this << "\n";
+        
+        row = 0;
+        col = 0;
+        // std::cout << "working on square step\n";
         // Square Step
         for(int j = 0; j < S; ++j)
         {
-            
-        }
+            if(S != 1 and col == heightmap_.size()-1)
+            {
+                row += w;
+                col = 0;
+            }
+            std::cout << "Square Step working on square " << j+1 << " of " << S << " Squares | w: " << w << ", col: " << col  << ", row: " << row <<"\n";
+            {
+                std::cout << "working on east ";
+                average = 0;
+                if(col-w/2 >= 0)
+                {
+                    std::cout << "left ";
+                    average += heightmap_[row+w/2][col-w/2];
+                }
+                std::cout << "right ";
+                average += heightmap_[row+w/2][col+w/2];
+                std::cout << "up ";
+                average += heightmap_[row][col];
+                std::cout << "down ";
+                average += heightmap_[row+w][col];
+                std::cout << "average\n";
+                heightmap_[row+w/2][col] = average/4 + ((double)rand() / RAND_MAX * M*2) - M;
+            }
+            {
+                std::cout << "working on west ";
+                average = 0;
+                std::cout << "left ";
+                average += heightmap_[row+w/2][col+w/2];
+                if(col+w/2 <= N)
+                {
+                    std::cout << "right ";
+                    average += heightmap_[row+w/2][col+w/2];
+                }
+                std::cout << "up ";
+                average += heightmap_[row][col+w];
+                std::cout << "down ";
+                average += heightmap_[row+w][col+w];
+                heightmap_[row+w/2][col+w] = average/4 + ((double)rand() / RAND_MAX * M*2) - M;
+                std::cout << "average\n";
+            }
+            {
+                std::cout << "working on north ";
+                average = 0;
+                std::cout << "left ";
+                average += heightmap_[row][col];
+                std::cout << "right ";
+                average += heightmap_[row][col+w];
+                if(row-w/2 >= 0)
+                {
+                    std::cout << "up ";
+                    average += heightmap_[row-w/2][col+w/2];
+                }
+                    std::cout << "down ";
+                average += heightmap_[row+w/2][col+w/2];
+                heightmap_[row][col+w/2] = average/4 + ((double)rand() / RAND_MAX * M*2) - M;
+                std::cout << "average\n";
+            }
+            {   
+                std::cout << "working on south ";
+                average = 0;
+                std::cout << "left ";
+                average += heightmap_[row+w][col];
+                std::cout << "right ";
+                average += heightmap_[row+w][col+w];
+                std::cout << "up ";
+                average += heightmap_[row+w/2][col+w/2];
+                if((row+w+(w/2)) <= N)
+                {
+                    std::cout << "down ";
+                    average += heightmap_[row+w+(w/2)][col+w/2];
+                }
+                heightmap_[row+w][col+w/2] = average/4 + ((double)rand() / RAND_MAX * M*2) - M;
+                std::cout << "average\n";
+            }
 
+            std::cout << *this << '\n';
+            col += w;
+        }
+        
         M = M * pow(2,-roughness);
+        c += 2;
     }
 }   
 
@@ -78,9 +162,10 @@ std::ostream & operator<<(std::ostream& cout, const Heightmap& heightmap)
         cout << "|";
         for(long unsigned int j = 0; j < heightmap.heightmap()[i].size(); ++j)
         {
-            cout << dir << heightmap.heightmap()[i][j];
+            cout << dir << std::setw(12) << heightmap.heightmap()[i][j]; dir = ", ";
         }
         cout << "|\n";
+
     }
     return cout;
 }

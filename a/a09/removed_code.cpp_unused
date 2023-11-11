@@ -1,0 +1,205 @@
+/*
+        for(int j = 0; j < S; j++)
+        {
+            if(S != 1 and col == heightmap_.size()-1)
+            {
+                row += w;
+                col = 0;
+            }
+
+            if (IS_SET( DEBUG_LEV, DEPTH_02 ))
+                std::cout << "\nSquare Step working on square " << j+1 << " of " << S << " Squares | w: " << w << ", col: " << col  << ", row: " << row << std::endl;
+
+
+            // East
+            if (IS_SET( DEBUG_LEV, DEPTH_03 ))
+                std::cout << "working on east ";
+
+            average = 0;
+            if (IS_SET( DEBUG_LEV, DEPTH_07))
+            {
+                std::cout << "w=" << w << "\n";
+                double tempAvg = average;
+                
+                int    offset_Val = w/2;
+                double value1 = get_heightmap_value(heightmap_, row + offset_Val, col - offset_Val);
+                double value2 = get_heightmap_value(heightmap_, row + offset_Val, col + offset_Val);
+                double value3 = get_heightmap_value(heightmap_, row, col + w);
+                double value4 = get_heightmap_value(heightmap_, row + w, col);
+
+                double beforeVal = tempAvg;
+                double afterVal = beforeVal + value1;
+
+                std::cout << "avg += [r+O][c-O] " << "avg(b)=" << beforeVal << " r+0=" << row+offset_Val << " c-O=" << col-offset_Val << " (" << value1 <<")" << "   avg(a)=" << afterVal << "\n";
+                beforeVal = afterVal;
+                afterVal = beforeVal + value2;
+                std::cout << "avg += [r+O][c+O] " << "avg(b)=" << beforeVal << " r+O=" << row+offset_Val << " c+O=" << col+offset_Val << " (" << value2 <<")" << "   avg(a)=" << afterVal << "\n";
+                beforeVal = afterVal;
+                afterVal = beforeVal + value3;
+                std::cout << "avg += [r][c]     " << "avg(b)=" << beforeVal << " r+w=" << row << "   c=" << col << " (" << value3 <<")" << "   avg(a)=" << afterVal << "\n";
+                beforeVal = afterVal;
+                afterVal = beforeVal + value4;
+                std::cout << "avg += [r+w][c]   " << "avg(b)=" << beforeVal << " r+w=" << row+w << " c=" << col << " (" << value4 <<")" << "   avg(a)=" << afterVal << "\n";
+            }
+
+            // do east
+            if ( col - w/2 >= 0)        // valid col
+            {
+                int    offset_Val = w/2;
+
+                double value2 = get_heightmap_value(heightmap_, row + offset_Val, col + offset_Val);
+                double value1 = get_heightmap_value(heightmap_, row + offset_Val, col + w + offset_Val);
+                double value3 = get_heightmap_value(heightmap_, row, col+w);
+                double value4 = get_heightmap_value(heightmap_, row + w, col + w);
+
+                average = value1 + value2 + value3 + value4;
+                heightmap_[row+offset_Val][col] = average/4 + ((double)rand() / RAND_MAX * M*2) - M;
+            }
+/-*
+            average = 0;
+            if (IS_SET( DEBUG_LEV, DEPTH_08 ))
+                std::cout << "col-w/2= (" << ( col-w/2) << ")   ";
+            if(col-w/2 >= 0)
+            {
+                if (IS_SET( DEBUG_LEV, DEPTH_04 ))
+                    std::cout << "left ";
+                average += heightmap_[row+w/2][col-w/2];
+            }
+            if (IS_SET( DEBUG_LEV, DEPTH_04 ))
+                std::cout << "right ";
+            average += heightmap_[row+w/2][col+w/2];
+            if (IS_SET( DEBUG_LEV, DEPTH_04 ))
+                std::cout << "up ";
+            average += heightmap_[row][col];
+            if (IS_SET( DEBUG_LEV, DEPTH_04 ))
+                std::cout << "down ";
+            average += heightmap_[row+w][col];
+            if (IS_SET( DEBUG_LEV, DEPTH_04 ))
+                std::cout << "average\n";
+            heightmap_[row+w/2][col] = average/4 + ((double)rand() / RAND_MAX * M*2) - M;
+        *-/
+
+            // West
+            if (IS_SET( DEBUG_LEV, DEPTH_03 ))
+                std::cout << "working on west ";
+
+            average = 0;
+            if (IS_SET( DEBUG_LEV, DEPTH_07))
+            {
+                std::cout << "w=" << w << "\n";
+                double tempAvg = average;
+                
+                int    offset_Val = w/2;
+                double value1 = get_heightmap_value(heightmap_, row + offset_Val, col - offset_Val);
+                double value2 = get_heightmap_value(heightmap_, row + offset_Val, col + offset_Val);
+                double value3 = get_heightmap_value(heightmap_, row, col);
+                double value4 = get_heightmap_value(heightmap_, row + w, col);
+
+                double beforeVal = tempAvg;
+                double afterVal = beforeVal + value1;
+
+                std::cout << "avg += [r+O][c-O] " << "avg(b)=" << beforeVal << " r+0=" << row+offset_Val << " c-O=" << col-offset_Val << " (" << value1 <<")" << "   avg(a)=" << afterVal << "\n";
+                beforeVal = afterVal;
+                afterVal = beforeVal + value2;
+                std::cout << "avg += [r+O][c+O] " << "avg(b)=" << beforeVal << " r+O=" << row+offset_Val << " c+O=" << col+offset_Val << " (" << value2 <<")" << "   avg(a)=" << afterVal << "\n";
+                beforeVal = afterVal;
+                afterVal = beforeVal + value3;
+                std::cout << "avg += [r][c]     " << "avg(b)=" << beforeVal << " r+w=" << row << "   c=" << col << " (" << value3 <<")" << "   avg(a)=" << afterVal << "\n";
+                beforeVal = afterVal;
+                afterVal = beforeVal + value4;
+                std::cout << "avg += [r+w][c]   " << "avg(b)=" << beforeVal << " r+w=" << row+w << " c=" << col << " (" << value4 <<")" << "   avg(a)=" << afterVal << "\n";
+            }
+
+            // do west
+            if ( col - w/2 >= 0)        // valid col
+            {
+                int    offset_Val = w/2;
+
+                double value1 = get_heightmap_value(heightmap_, row + offset_Val, col - offset_Val);
+                double value2 = get_heightmap_value(heightmap_, row + offset_Val, col + offset_Val);
+                double value3 = get_heightmap_value(heightmap_, row, col);
+                double value4 = get_heightmap_value(heightmap_, row + w, col);
+
+                average = value1 + value2 + value3 + value4;
+                heightmap_[row+offset_Val][col] = average/4 + ((double)rand() / RAND_MAX * M*2) - M;
+            }
+
+            // west Code
+            if (IS_SET( DEBUG_LEV, DEPTH_03 ))
+                std::cout << "working on west ";
+            average = 0;
+            if (IS_SET( DEBUG_LEV, DEPTH_04 ))
+                std::cout << "left ";
+            average += heightmap_[row+w/2][col+w/2];
+            if(col+w/2 <= N)
+            {
+                if (IS_SET( DEBUG_LEV, DEPTH_04 ))
+                    std::cout << "right ";
+                average += heightmap_[row+w/2][col+w/2];
+            }
+            if (IS_SET( DEBUG_LEV, DEPTH_04 ))
+                std::cout << "up ";
+            average += heightmap_[row][col+w];
+            if (IS_SET( DEBUG_LEV, DEPTH_04 ))
+                std::cout << "down ";
+            average += heightmap_[row+w][col+w];
+            heightmap_[row+w/2][col+w] = average/4 + ((double)rand() / RAND_MAX * M*2) - M;
+            if (IS_SET( DEBUG_LEV, DEPTH_04 ))
+                std::cout << "average\n";
+        
+            //North code
+            if (IS_SET( DEBUG_LEV, DEPTH_03 ))
+                std::cout << "working on north ";
+            average = 0;
+            if (IS_SET( DEBUG_LEV, DEPTH_04 ))
+                std::cout << "left ";
+            average += heightmap_[row][col];
+            if (IS_SET( DEBUG_LEV, DEPTH_04 ))
+                std::cout << "right ";
+            average += heightmap_[row][col+w];
+            if(row-w/2 >= 0)
+            {
+                if (IS_SET( DEBUG_LEV, DEPTH_04 ))
+                    std::cout << "up ";
+                average += heightmap_[row-w/2][col+w/2];
+            }
+            if (IS_SET( DEBUG_LEV, DEPTH_04 ))
+                std::cout << "down ";
+            average += heightmap_[row+w/2][col+w/2];
+            heightmap_[row][col+w/2] = average/4 + ((double)rand() / RAND_MAX * M*2) - M;
+            if (IS_SET( DEBUG_LEV, DEPTH_04 ))
+                std::cout << "average\n";
+            
+            // south code   
+            if (IS_SET( DEBUG_LEV, DEPTH_03 ))
+                std::cout << "working on south ";
+            average = 0;
+            if (IS_SET( DEBUG_LEV, DEPTH_04 ))
+                std::cout << "left ";
+            average += heightmap_[row+w][col];
+            if (IS_SET( DEBUG_LEV, DEPTH_04 ))
+                std::cout << "right ";
+            average += heightmap_[row+w][col+w];
+            if (IS_SET( DEBUG_LEV, DEPTH_04 ))
+                std::cout << "up ";
+            average += heightmap_[row+w/2][col+w/2];
+
+            if (IS_SET( DEBUG_LEV, DEPTH_08 ))
+                std::cout << "row+w+w/2= (" << ( (row+w+(w/2))) << ")   ";
+
+            if((row+w+(w/2)) <= N)
+            {
+                if (IS_SET( DEBUG_LEV, DEPTH_04 ))
+                    std::cout << "down ";
+                average += heightmap_[row+w+(w/2)][col+w/2];
+            }
+            heightmap_[row+w][col+w/2] = average/4 + ((double)rand() / RAND_MAX * M*2) - M;
+            if (IS_SET( DEBUG_LEV, DEPTH_04 ))
+                std::cout << "average\n";
+            
+
+            // end it all
+            if (IS_SET( DEBUG_LEV, DEPTH_05 ))
+                std::cout << *this << '\n';
+            col += w;
+*/   

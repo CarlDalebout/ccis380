@@ -17,15 +17,14 @@ mygllib::Light light;
 GLfloat light_model_ambient[] = {0.0, 0.0, 0.0, 1.0};
 int y_axis_angle = 0;
 
-int n = 7;
+int n = 3;
 Heightmap heightmap(n);
-
 
 void init()
 {
     mygllib::View & view = *(mygllib::SingletonView::getInstance());
     view.eyex()     = -5.0f;
-    view.eyey()     = 100.0f;
+    view.eyey()     = 20.0f;
     view.eyez()     = 5.0f;
     view.zNear()    = 0.1f;
     view.zFar()     = 300.0f;
@@ -34,8 +33,8 @@ void init()
     view.lookat();      
 
     srand(time(NULL));
-    // heightmap.Diamond_Square();
-    // std::cout << heightmap;
+    heightmap.Diamond_Square();
+    std::cout << heightmap << "\n";
 
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClearDepth(1.0f);
@@ -49,7 +48,8 @@ void init()
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
 }
 
-void draw_triangle_strip(std::vector<float> top, std::vector<float> bottom, float x_offset = 0, float z_offset = 0)
+
+void draw_triangle_strip(std::vector<double> top, std::vector<double> bottom, double x_offset = 0, double z_offset = 0)
 {
     /*
        p0      p2     p3     p5
@@ -86,7 +86,7 @@ void draw_triangle_strip(std::vector<float> top, std::vector<float> bottom, floa
     }
 }
 
-void draw_triangle_mesh(std::vector<std::vector<float>> heightmap, int x_offset = 0, int z_offset = 0)
+void draw_triangle_mesh(std::vector<std::vector<double>> heightmap, int x_offset = 0, int z_offset = 0)
 {
     /*
        p0      p2     p4     p6
@@ -108,8 +108,8 @@ void draw_triangle_mesh(std::vector<std::vector<float>> heightmap, int x_offset 
         +------+------+------+
        p10      p9     p10    p11
     */
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glFrontFace(GL_CW);

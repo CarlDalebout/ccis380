@@ -105,9 +105,8 @@ void display()
         glPushMatrix();
         {
             glColor3f(0.9f, 0.9f, 0.9f);
-            // mygllib::Material mat(mygllib::Material::WHITE_PLASTIC);
-            // mat.set();
             glTranslatef(-pow(2, n)/2, 0, -pow(2, n)/2);
+            // std::cout << heightmap << std::endl;
             draw_triangle_mesh(heightmap.heightmap());
         }
         glPopMatrix();

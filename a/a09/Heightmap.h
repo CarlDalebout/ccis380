@@ -9,10 +9,10 @@ class Heightmap
 {
 public:
     Heightmap()
-    :n_(0)
+    :n_(0), maxRow_(0), maxCol_(0)
     {}
     Heightmap(int n)
-    :n_(n)
+    :n_(n), maxRow_(pow(2, n)), maxCol_(pow(2, n))
     {
         std::vector<std::vector<double>> temp(pow(2, n)+1, std::vector<double>(pow(2, n)+1, 0));
         heightmap_ = temp;

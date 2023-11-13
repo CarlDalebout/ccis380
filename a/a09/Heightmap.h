@@ -18,16 +18,23 @@ public:
         heightmap_ = temp;
     }
 
-    int & n()       {return n_;}
-    int   n() const {return n_;}
+    int & n()           {return n_;}
+    int   n()     const {return n_;}
+    int   width() const {return maxCol_;}
     std::vector<std::vector<double>> & heightmap()       {return heightmap_;}
     std::vector<std::vector<double>>   heightmap() const {return heightmap_;}
 
-    void                              Diamond_Square();
-    Heightmap                         resize(int n);
+
+    double    get_value(int row, int col, bool & flag);
+    void      diamond_step(int width, double M);
+    void      square_step(int width, double M);
+    void      Diamond_Square(double roughtness);
+    Heightmap resize(int n);
 
 private:
     int     n_;
+    int     maxRow_;
+    int     maxCol_;
     std::vector <std::vector<double>> heightmap_;
 };
     std::ostream & operator<<(std::ostream& cout, const Heightmap& heightmap);

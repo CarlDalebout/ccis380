@@ -86,9 +86,9 @@ void       Heightmap::Diamond_Square(double roughness)
 {   
     double M = 0.25 * maxCol_; 
 
-    heightmap_[0][0]              = ((double)rand() / RAND_MAX * M*2) - M;
-    heightmap_[0][maxCol_]      = ((double)rand() / RAND_MAX * M*2) - M;
-    heightmap_[maxRow_][0]      = ((double)rand() / RAND_MAX * M*2) - M;
+    heightmap_[0][0]                = ((double)rand() / RAND_MAX * M*2) - M;
+    heightmap_[0][maxCol_]          = ((double)rand() / RAND_MAX * M*2) - M;
+    heightmap_[maxRow_][0]          = ((double)rand() / RAND_MAX * M*2) - M;
     heightmap_[maxRow_][maxCol_]    = ((double)rand() / RAND_MAX * M*2) - M;
     
     for(int w = pow(2, n_); w >= 2; w /= 2)

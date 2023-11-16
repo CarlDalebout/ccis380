@@ -17,10 +17,10 @@ mygllib::Light light;
 GLfloat light_model_ambient[] = {0.0, 0.0, 0.0, 1.0};
 int y_axis_angle = 0;
 
-int         n = 4;
-Heightmap   heightmap(n);
-float       roughness = 1;
-bool        print_lines = 1;
+bool print_lines = true;
+int n = 3;
+Heightmap heightmap(n);
+double roughness = 1;
 
 void init()
 {

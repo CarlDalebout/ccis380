@@ -22,7 +22,8 @@ public:
 
     vec4f operator+(vec4f const&);
     vec4f operator-(vec4f const&);
-    vec4f operator*(float const);
+    vec4f operator*(float const );
+    vec4f operator*(vec4f const&);
 private:
     float x_;
     float y_;
@@ -30,5 +31,7 @@ private:
     float w_;
 
 };
+
+vec4f operator*(vec4f const&, vec4f const&);
 
 #endif

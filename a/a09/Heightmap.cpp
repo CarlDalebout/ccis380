@@ -1,9 +1,10 @@
 #include <string>
 #include <iomanip>
+#include <GL/freeglut.h>
 #include <cmath>
 #include "Heightmap.h"
 
-double Heightmap::get_value(int row, int col, bool & flag)
+float Heightmap::get_value(int row, int col, bool & flag)
 {
     if(row >= 0 && row <= maxRow_ && col >= 0 && col <= maxCol_)
     {
@@ -14,23 +15,54 @@ double Heightmap::get_value(int row, int col, bool & flag)
     return 9999;
 }
 
-void Heightmap::diamond_step(int width, double M)
+void Heightmap::calc_normals()
+{
+    for(int row = 0; row < maxRow_-1; row++)
+    {   
+        std::cout << "working on row " << row << " out of " << maxRow_-1 << '\n';
+        for(int col = 0; col < maxCol_-1; col++)
+        {   
+            std::cout << "working on col " << col << " out of " << maxCol_-1 << '\n';
+            vec4f point1(col     * xoffset_, heightmap_[row][col], row     * zoffset_);
+            std::cout << "point1: " << point1;
+            vec4f point2(col + 1 * xoffset_, heightmap_[row][col], row     * zoffset_);
+            std::cout << " point2: " << point2 << '\n';
+            vec4f point3(col     * xoffset_, heightmap_[row][col], row + 1 * zoffset_);
+            std::cout << "point3: " << point3;
+            vec4f point4(col + 1 * xoffset_, heightmap_[row][col], row + 1 * zoffset_);
+            std::cout << " point4: " << point4 << '\n';
+            
+            vec4f normalVector1 = (point1 - point3) * (point1 - point2);
+            normalVector1 = normalVector1 * (float)sqrt(pow(normalVector1.x(), 2) + pow(normalVector1.y(), 2) + pow(normalVector1.z(), 2));
+            std::cout << "normalVector1: " << normalVector1;
+            vec4f normalVector2 =  (point3 - point4) * (point3 - point2);
+            normalVector1 = normalVector2 * (float)sqrt(pow(normalVector2.x(), 2) + pow(normalVector2.y(), 2) + pow(normalVector2.z(), 2));
+            std::cout << " normalVector2: " << normalVector2 << "\n";
+
+            normalmap_[row][col].operator=(normalVector1);
+            std::cout << "pushed normalvector1 into normal map";
+            normalmap_[row][col+1].operator=(normalVector2);
+        } 
+    }
+}
+
+void Heightmap::diamond_step(int width, float M)
 {
     for(int row = 0; row < maxRow_; row += width)
     {   
         for(int col = 0; col < maxCol_; col += width)
         {   
-            double value1   = heightmap_[row][col];
-            double value2   = heightmap_[row][col+width];
-            double value3   = heightmap_[row+width][col];
-            double value4   = heightmap_[row+width][col+width];
+            float value1 = heightmap_[row][col];
+            float value2 = heightmap_[row][col+width];
+            float value3 = heightmap_[row+width][col];
+            float value4 = heightmap_[row+width][col+width];
 
-            heightmap_[row + width/2][col + width/2] = (value1 + value2 + value3 + value4)/4 + (double)rand() / RAND_MAX * M*2 - M;
+            heightmap_[row + width/2][col + width/2] = (value1 + value2 + value3 + value4)/4 + (float)rand() / RAND_MAX * M*2 - M;
         } 
     }
 }
 
-void Heightmap::square_step(int width, double M)
+void Heightmap::square_step(int width, float M)
 {
     int offset = width/2;
     for(int row = offset; row < maxRow_-1/width; row += width)
@@ -43,140 +75,145 @@ void Heightmap::square_step(int width, double M)
             bool flagW = true;
             bool trash = true;
 
-            double value1 = get_value(row-width,    col, flagN);
-            double value2 = get_value(row - offset, col + offset, trash);
-            double value3 = get_value(row,          col + width, flagE);
-            double value4 = get_value(row + offset, col + offset, trash);
-            double value5 = get_value(row + width,  col, flagS);
-            double value6 = get_value(row + offset, col - offset, trash);
-            double value7 = get_value(row,          col - width, flagW);
-            double value8 = get_value(row - offset, col - offset, trash);
-            double value9 = get_value(row,          col, trash);
-
-int DEBUG_LEV = DEBUG_OFF;      // 0 = no Debug
-
-<<<<<<< HEAD
-double Heightmap::get_value(int row, int col)
-{
-    if(row >= 0 && row <= maxRow_ && col >= 0 && col <= maxCol_)
-    {
-        return heightmap_[row][col];
-    }
-    return 0;
-}
-
-void Heightmap::diamond_step(int width, double M)
-{
-    // std::cout << "diamond_step for w:" << width << '\n';
-
-    for(int row = 0; row < maxRow_; row += width)
-    {   
-        for(int col = 0; col < maxCol_; col += width)
-        {   
-            // std::cout << "row: " << row  << " max row: " << maxRow_ << " col: " << col << " max col: " <<  maxCol_ << "\n";
-            double value1   = heightmap_[row][col];
-            double value2   = heightmap_[row][col+width];
-            double value3   = heightmap_[row+width][col];
-            double value4   = heightmap_[row+width][col+width];
-
-            heightmap_[row + width/2][col + width/2] = (value1 + value2 + value3 + value4)/4 + (double)rand() / RAND_MAX * M*2 - M;
-        } 
-    }
-}
-
-void Heightmap::square_step(int width, double M)
-{
-    // std::cout << "square_step for w:" << width << '\n';
-    int offset = width/2;
-    for(int row = offset; row < maxRow_-1/width; row += width)
-    {
-        for(int col = offset; col < maxCol_-1/width; col += width)
-        {   
-            
-            double value1 = get_value(row-width,    col);
-            double value2 = get_value(row - offset, col + offset);
-            double value3 = get_value(row,          col + width);
-            double value4 = get_value(row + offset, col + offset);
-            double value5 = get_value(row + width,  col);
-            double value6 = get_value(row + offset, col - offset);
-            double value7 = get_value(row,          col - width);
-            double value8 = get_value(row - offset, col - offset);
-            double value9 = get_value(row,          col);
-
-            // North
-            heightmap_[row - offset][col] = (value1 + value2 + value9 + value8)/4 + (double)rand() / RAND_MAX * M*2 - M;
-
-            // South
-            heightmap_[row + offset][col] = (value9 + value4 + value5 + value6)/4 + (double)rand() / RAND_MAX * M*2 - M;
-
-            // East
-            heightmap_[row][col + offset] = (value2 + value3 + value4 + value9)/4 + (double)rand() / RAND_MAX * M*2 - M;
-            
-            // West
-            heightmap_[row][col - offset] = (value8 + value9 + value6 + value7)/4 + (double)rand() / RAND_MAX * M*2 - M;
-=======
+            float value1 = get_value(row-width,    col, flagN);
+            float value2 = get_value(row - offset, col + offset, trash);
+            float value3 = get_value(row,          col + width, flagE);
+            float value4 = get_value(row + offset, col + offset, trash);
+            float value5 = get_value(row + width,  col, flagS);
+            float value6 = get_value(row + offset, col - offset, trash);
+            float value7 = get_value(row,          col - width, flagW);
+            float value8 = get_value(row - offset, col - offset, trash);
+            float value9 = get_value(row,          col, trash);
 
             // North
             if(flagN)
-                heightmap_[row - offset][col] = (value1 + value2 + value9 + value8)/4 + (double)rand() / RAND_MAX * M*2 - M;
+                heightmap_[row - offset][col] = (value1 + value2 + value9 + value8)/4 + (float)rand() / RAND_MAX * M*2 - M;
             else
-                heightmap_[row - offset][col] = (value2 + value9 + value8)/3 + (double)rand() / RAND_MAX * M*2 - M;
+                heightmap_[row - offset][col] = (value2 + value9 + value8)/3 + (float)rand() / RAND_MAX * M*2 - M;
 
             // South
             if(flagS)
-                heightmap_[row + offset][col] = (value9 + value4 + value5 + value6)/4 + (double)rand() / RAND_MAX * M*2 - M;
+                heightmap_[row + offset][col] = (value9 + value4 + value5 + value6)/4 + (float)rand() / RAND_MAX * M*2 - M;
             else
-                heightmap_[row + offset][col] = (value9 + value4 + value6)/3 + (double)rand() / RAND_MAX * M*2 - M;
+                heightmap_[row + offset][col] = (value9 + value4 + value6)/3 + (float)rand() / RAND_MAX * M*2 - M;
 
             // East
             if(flagE)
-                heightmap_[row][col + offset] = (value2 + value3 + value4 + value9)/4 + (double)rand() / RAND_MAX * M*2 - M;
+                heightmap_[row][col + offset] = (value2 + value3 + value4 + value9)/4 + (float)rand() / RAND_MAX * M*2 - M;
             else
-                heightmap_[row][col + offset] = (value2 + value4 + value9)/3 + (double)rand() / RAND_MAX * M*2 - M;
+                heightmap_[row][col + offset] = (value2 + value4 + value9)/3 + (float)rand() / RAND_MAX * M*2 - M;
 
             // West
             if(flagW)
-                heightmap_[row][col - offset] = (value8 + value9 + value6 + value7)/4 + (double)rand() / RAND_MAX * M*2 - M;
+                heightmap_[row][col - offset] = (value8 + value9 + value6 + value7)/4 + (float)rand() / RAND_MAX * M*2 - M;
             else
-                heightmap_[row][col - offset] = (value8 + value9 + value6)/3 + (double)rand() / RAND_MAX * M*2 - M;
->>>>>>> 696865407e09bc65502fab20a9a8f811a4d6d3a7
+                heightmap_[row][col - offset] = (value8 + value9 + value6)/3 + (float)rand() / RAND_MAX * M*2 - M;
         }
     }
 }
 
-void       Heightmap::Diamond_Square(double roughness)
+void Heightmap::Diamond_Square(float roughness)
 {   
-    double M = 0.25 * maxCol_; 
-<<<<<<< HEAD
-    std::cout << "max row: " << maxRow_ << " max col: " << maxCol_ << std::endl;
-    heightmap_[0][0]              = ((double)rand() / RAND_MAX * M*2) - M;
-    heightmap_[0][maxCol_]      = ((double)rand() / RAND_MAX * M*2) - M;
-    heightmap_[maxRow_][0]      = ((double)rand() / RAND_MAX * M*2) - M;
-    heightmap_[maxRow_][maxCol_]    = ((double)rand() / RAND_MAX * M*2) - M;
-    
-    // std::cout << *this << '\n';
+    float M = 0.25 * maxCol_; 
 
-    for(int w = pow(2, n_); w >= 2; w /= 2)
-    {
-        diamond_step(w, M);
-        // std::cout << *this << '\n';
-        square_step(w, M);    
-        // std::cout << *this << '\n';
-=======
-
-    heightmap_[0][0]                = ((double)rand() / RAND_MAX * M*2) - M;
-    heightmap_[0][maxCol_]          = ((double)rand() / RAND_MAX * M*2) - M;
-    heightmap_[maxRow_][0]          = ((double)rand() / RAND_MAX * M*2) - M;
-    heightmap_[maxRow_][maxCol_]    = ((double)rand() / RAND_MAX * M*2) - M;
+    heightmap_[0][0]                = ((float)rand() / RAND_MAX * M*2) - M;
+    heightmap_[0][maxCol_]          = ((float)rand() / RAND_MAX * M*2) - M;
+    heightmap_[maxRow_][0]          = ((float)rand() / RAND_MAX * M*2) - M;
+    heightmap_[maxRow_][maxCol_]    = ((float)rand() / RAND_MAX * M*2) - M;
     
     for(int w = pow(2, n_); w >= 2; w /= 2)
     {
         diamond_step(w, M);
         square_step(w, M);    
->>>>>>> 696865407e09bc65502fab20a9a8f811a4d6d3a7
         M = M * pow(2,-roughness);
     }
 }  
+
+void    Heightmap::draw_triangle_mesh_wired()
+{
+    /*
+       p0      p2     p4     p6
+        +------+------+------+
+        |     /|     /|     /|
+        |    / |    / |    / |
+        |   /  |   /  |   /  |
+        |  /   |  /   |  /   |
+        | /    | /    | /    |
+        |/     |/     |/     |
+        +------+------+------+
+       p1      p3     p5     p7 p8
+       p9     /|     /|     /|
+        |    / |    / |    / |
+        |   /  |   /  |   /  |
+        |  /   |  /   |  /   |
+        | /    | /    | /    |
+        |/     |/     |/     |
+        +------+------+------+
+       p10      p9     p10    p11
+    */
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glEnable(GL_COLOR_MATERIAL);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    glFrontFace(GL_CW);
+    glBegin(GL_TRIANGLE_STRIP);
+    for(long unsigned int i = 0; i < heightmap_.size()-1; ++i)
+    {
+        for(long unsigned int j = 0; j < heightmap_[i].size(); ++j)
+        {
+            glVertex3f(xoffset_ + j, heightmap_[i][j],   zoffset_ + i);
+            glVertex3f(xoffset_ + j, heightmap_[i+1][j], zoffset_ + i+1);
+        }
+            glVertex3f(xoffset_ + heightmap_[i].size()-1, 
+                       heightmap_[i+1][heightmap_[i].size()-1], 
+                       zoffset_ + i + 1);
+
+            glVertex3f(xoffset_,  
+                       heightmap_[i+1][0], 
+                       zoffset_ + i + 1);
+    }
+    glEnd();
+}
+
+void    Heightmap::draw_triangle_mesh_solid()
+{
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glEnable(GL_COLOR_MATERIAL);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    glFrontFace(GL_CW);
+    glBegin(GL_TRIANGLE_STRIP);
+    for(long unsigned int i = 0; i < heightmap_.size()-1; ++i)
+    {
+        for(long unsigned int j = 0; j < heightmap_[i].size(); ++j)
+        {
+            glVertex3f(xoffset_ + j, heightmap_[i][j],   zoffset_ + i);
+            glVertex3f(xoffset_ + j, heightmap_[i+1][j], zoffset_ + i+1);
+        }
+            glVertex3f(xoffset_ + heightmap_[i].size()-1, 
+                       heightmap_[i+1][heightmap_[i].size()-1], 
+                       zoffset_ + i + 1);
+
+            glVertex3f(xoffset_,  
+                       heightmap_[i+1][0], 
+                       zoffset_ + i + 1);
+    }
+    glEnd();
+}
+
+void Heightmap::print_normalmap()
+{
+    for(long unsigned int i = 0; i < normalmap_.size(); ++i)
+    {
+        std::string dir = "";
+        std::cout << "|";
+        for(long unsigned int j = 0; j < normalmap_[i].size(); ++j)
+        {
+            std::cout << dir << std::setw(9) << normalmap_[i][j]; dir = ", ";
+        }
+        std::cout << "|\n";
+    }
+}
 
 Heightmap  Heightmap::resize(int n)
 {

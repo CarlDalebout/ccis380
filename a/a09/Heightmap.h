@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
-
+#include "Vec4f.h"
 
 /* morgan code*/
 #define DEBUG_OFF 0
@@ -28,37 +28,61 @@
 #define REMOVE_BIT( flag, bit )	        ( ( flag ) &= ~( bit ) )
 #define TOGGLE_BIT( flag, bit )         ( ( flag ) ^=  ( bit ) )
 
+
 class Heightmap
 {
 public:
     Heightmap()
     :n_(0), maxRow_(0), maxCol_(0)
     {}
-    Heightmap(int n)
-    :n_(n), maxRow_(pow(2, n)), maxCol_(pow(2, n))
+    Heightmap(int n, float xoffset = 1, float zoffset = 1)
+    :n_(n), maxRow_(pow(2, n)), maxCol_(pow(2, n)), xoffset_(xoffset), zoffset_(zoffset)
     {
-        std::vector<std::vector<double>> temp(pow(2, n)+1, std::vector<double>(pow(2, n)+1, 0));
+        std::vector<std::vector<float>> temp(pow(2, n)+1, std::vector<float>(pow(2, n)+1, 0));
         heightmap_ = temp;
+        std::vector<std::vector<vec4f>> tempv(pow(2,n)+1, std::vector<vec4f>(pow(2,n)+1));    
     }
 
-    int & n()           {return n_;}
-    int   n()     const {return n_;}
-    int   width() const {return maxCol_;}
-    std::vector<std::vector<double>> & heightmap()       {return heightmap_;}
-    std::vector<std::vector<double>>   heightmap() const {return heightmap_;}
+    int         n()        const {return n_;}
+    int         width()    const {return maxCol_;}
+    int         hight()    const {return maxRow_;}
+
+    float &     xoffset()        {return xoffset_;}
+    float       xoffset()  const {return xoffset_;}
+    float &     zoffset()        {return zoffset_;}
+    float       zoffset()  const {return zoffset_;}
+    
+    std::vector<std::vector<float>> & heightmap()       {return heightmap_;}
+    std::vector<std::vector<float>>   heightmap() const {return heightmap_;}
+
+    std::vector<std::vector<vec4f>> & normalmap()       {return normalmap_;}
+    std::vector<std::vector<vec4f>>   normalmap() const {return normalmap_;}
 
 
-    double    get_value(int row, int col, bool & flag);
-    void      diamond_step(int width, double M);
-    void      square_step(int width, double M);
-    void      Diamond_Square(double roughtness);
+    float       get_value(int row, int col, bool & flag);
+    
+    void        calc_normals();
+    
+    void        diamond_step(int width, float M);
+    void        square_step(int width, float M);
+    void        Diamond_Square(float roughtness);
+
+    void        draw_triangle_mesh_wired();
+    void        draw_triangle_mesh_solid();
+
+    void        print_normalmap();
+
     Heightmap resize(int n);
+
 
 private:
     int     n_;
     int     maxRow_;
     int     maxCol_;
-    std::vector <std::vector<double>> heightmap_;
+    float  xoffset_;
+    float  zoffset_;
+    std::vector <std::vector<float>> heightmap_;
+    std::vector <std::vector<vec4f>> normalmap_;
 };
     std::ostream & operator<<(std::ostream& cout, const Heightmap& heightmap);
 

@@ -17,9 +17,10 @@ mygllib::Light light;
 GLfloat light_model_ambient[] = {0.0, 0.0, 0.0, 1.0};
 int y_axis_angle = 0;
 
-int n = 3;
-Heightmap heightmap(n);
-double roughness = 1;
+int         n = 4;
+Heightmap   heightmap(n);
+float       roughness = 1;
+bool        print_lines = 1;
 
 void init()
 {
@@ -35,6 +36,7 @@ void init()
 
     srand(time(NULL));
     heightmap.Diamond_Square(roughness);
+    heightmap.calc_normals();
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClearDepth(1.0f);
@@ -46,48 +48,6 @@ void init()
     light.on();
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
-}
-
-void draw_triangle_mesh(std::vector<std::vector<double>> heightmap, int x_offset = 0, int z_offset = 0)
-{
-    /*
-       p0      p2     p4     p6
-        +------+------+------+
-        |     /|     /|     /|
-        |    / |    / |    / |
-        |   /  |   /  |   /  |
-        |  /   |  /   |  /   |
-        | /    | /    | /    |
-        |/     |/     |/     |
-        +------+------+------+
-       p1      p3     p5     p7 p8
-       p9     /|     /|     /|
-        |    / |    / |    / |
-        |   /  |   /  |   /  |
-        |  /   |  /   |  /   |
-        | /    | /    | /    |
-        |/     |/     |/     |
-        +------+------+------+
-       p10      p9     p10    p11
-    */
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glEnable(GL_COLOR_MATERIAL);
-    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-    glFrontFace(GL_CW);
-    glBegin(GL_TRIANGLE_STRIP);
-    for(long unsigned int i = 0; i < heightmap.size()-1; ++i)
-    {
-        for(long unsigned int j = 0; j < heightmap[i].size(); ++j)
-        {
-            glVertex3f(x_offset + j, heightmap[i][j], z_offset + i);
-            glVertex3f(x_offset + j, heightmap[i+1][j], z_offset + i+1);
-        }
-            glVertex3f(x_offset + heightmap[i].size()-1, heightmap[i+1][heightmap[i].size()-1], z_offset + i + 1);
-            glVertex3f(x_offset                        , heightmap[i+1][0], z_offset + i + 1);
-
-    }
-    glEnd();
 }
 
 void display()
@@ -105,7 +65,10 @@ void display()
             glColor3f(0.9f, 0.9f, 0.9f);
             glTranslatef(-pow(2, n)/2, 0, -pow(2, n)/2);
             // std::cout << heightmap << std::endl;
-            draw_triangle_mesh(heightmap.heightmap());
+            if(print_lines)
+                heightmap.draw_triangle_mesh_wired();
+            else
+                heightmap.draw_triangle_mesh_solid();
         }
         glPopMatrix();
     }
@@ -139,7 +102,7 @@ void keyboard(unsigned char key, int x, int y)
         
         case 'n':
         {
-            double product = sqrt(pow(view.eyex(), 2) + pow(view.eyey(), 2) + pow(view.eyez(), 2));
+            float product = sqrt(pow(view.eyex(), 2) + pow(view.eyey(), 2) + pow(view.eyez(), 2));
             view.eyex() -= view.eyex()/(product); 
             view.eyey() -= view.eyey()/(product); 
             view.eyez() -= view.eyez()/(product); 
@@ -147,7 +110,7 @@ void keyboard(unsigned char key, int x, int y)
         } break;
         case 'N':
         {
-            double product = sqrt(pow(view.eyex(), 2) + pow(view.eyey(), 2) + pow(view.eyez(), 2));
+            float product = sqrt(pow(view.eyex(), 2) + pow(view.eyey(), 2) + pow(view.eyez(), 2));
             view.eyex() += view.eyex()/(product); 
             view.eyey() += view.eyey()/(product); 
             view.eyez() += view.eyez()/(product); 
@@ -159,6 +122,9 @@ void keyboard(unsigned char key, int x, int y)
 
         case 's': roughness -= 0.1; heightmap.Diamond_Square(roughness); reset = true; break;
         case 'S': roughness += 0.1; heightmap.Diamond_Square(roughness); reset = true; break;
+
+        case 'p': print_lines = false; reset = true; break;
+        case 'P': print_lines = true;  reset = true; break;
 
         case '1': light.x() += 0.1; reset = true; break;
         case '2': light.x() -= 0.1; reset = true; break;

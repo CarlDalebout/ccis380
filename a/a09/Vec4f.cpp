@@ -27,7 +27,7 @@ vec4f vec4f::operator-(vec4f const & vector)
     return ret;
 }
 
-vec4f vec4f::operator*(float const scaler)
+vec4f vec4f::operator*(float const & scaler)
 {
     vec4f ret(x_ * scaler, 
               y_ * scaler, 
@@ -41,6 +41,15 @@ vec4f vec4f::operator*(vec4f const & vector)
     vec4f ret((y_* vector.z_ - (vector.y_ * z_)), 
               (-1* ((x_ * vector.z_) - (vector.x_ * z_))), 
               (x_ * vector.y_) - (vector.x_ * y_));
+    return ret;
+}
+
+vec4f vec4f::operator/(float const & scaler)
+{
+    vec4f ret(x_ / scaler,
+              y_ / scaler,
+              z_ / scaler,
+              w_);
     return ret;
 }
 

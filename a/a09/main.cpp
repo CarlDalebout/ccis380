@@ -18,7 +18,7 @@ GLfloat light_model_ambient[] = {0.0, 0.0, 0.0, 1.0};
 int y_axis_angle = 0;
 
 bool print_lines = true;
-int n = 3;
+int n = 2;
 Heightmap heightmap(n);
 double roughness = 1;
 
@@ -37,7 +37,6 @@ void init()
     srand(time(NULL));
     heightmap.Diamond_Square(roughness);
     heightmap.calc_normals();
-    heightmap.print_normalmap();
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClearDepth(1.0f);
@@ -64,8 +63,9 @@ void display()
         glPushMatrix();
         {
             glColor3f(0.9f, 0.9f, 0.9f);
-            glTranslatef(-pow(2, n)/2, 0, -pow(2, n)/2);
+            glTranslatef(-(pow(2, n)/2.0), 0, -(pow(2, n)/2.0));
             // std::cout << heightmap << std::endl;
+            heightmap.print_normalmap();
             if(print_lines)
                 heightmap.draw_triangle_mesh_wired();
             else
@@ -118,11 +118,11 @@ void keyboard(unsigned char key, int x, int y)
             reset = true;
         } break;
 
-        case '-': n -= 1; heightmap = heightmap.resize(n); heightmap.Diamond_Square(roughness); reset = true; break;
-        case '+': n += 1; heightmap = heightmap.resize(n); heightmap.Diamond_Square(roughness); reset = true; break;
+        case '-': n -= 1; heightmap = heightmap.resize(n); heightmap.Diamond_Square(roughness); heightmap.calc_normals(); reset = true; break;
+        case '+': n += 1; heightmap = heightmap.resize(n); heightmap.Diamond_Square(roughness); heightmap.calc_normals(); reset = true; break;
 
-        case 's': roughness -= 0.1; heightmap.Diamond_Square(roughness); reset = true; break;
-        case 'S': roughness += 0.1; heightmap.Diamond_Square(roughness); reset = true; break;
+        case 's': roughness -= 0.1; heightmap.Diamond_Square(roughness); heightmap.calc_normals(); reset = true; break;
+        case 'S': roughness += 0.1; heightmap.Diamond_Square(roughness); heightmap.calc_normals(); reset = true; break;
 
         case 'p': print_lines = false; reset = true; break;
         case 'P': print_lines = true;  reset = true; break;

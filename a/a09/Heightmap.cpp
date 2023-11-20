@@ -26,13 +26,13 @@ void Heightmap::calc_normals()
         
         /// Set the points connected to the plains to the same normal vector
         vec4f normalVector1 = (point1 - point3) * (point1 - point2);
-        normalVector1 = normalVector1 * (float)sqrt(pow(normalVector1.x(), 2) + pow(normalVector1.y(), 2) + pow(normalVector1.z(), 2));
+        normalVector1 = normalVector1 / (float)sqrt(pow(normalVector1.x(), 2) + pow(normalVector1.y(), 2) + pow(normalVector1.z(), 2));
         vec4f normalVector2 = (point2 - point1) * (point2 - point3);
-        normalVector2 = normalVector2 * (float)sqrt(pow(normalVector2.x(), 2) + pow(normalVector2.y(), 2) + pow(normalVector2.z(), 2));
+        normalVector2 = normalVector2 / (float)sqrt(pow(normalVector2.x(), 2) + pow(normalVector2.y(), 2) + pow(normalVector2.z(), 2));
         vec4f normalVector3 =  (point3 - point4) * (point3 - point2);
-        normalVector3 = normalVector3 * (float)sqrt(pow(normalVector3.x(), 2) + pow(normalVector3.y(), 2) + pow(normalVector3.z(), 2));
+        normalVector3 = normalVector3 / (float)sqrt(pow(normalVector3.x(), 2) + pow(normalVector3.y(), 2) + pow(normalVector3.z(), 2));
         vec4f normalVector4 =  (point4 - point2) * (point4 - point3);
-        normalVector4 = normalVector4 * (float)sqrt(pow(normalVector4.x(), 2) + pow(normalVector4.y(), 2) + pow(normalVector4.z(), 2));
+        normalVector4 = normalVector4 / (float)sqrt(pow(normalVector4.x(), 2) + pow(normalVector4.y(), 2) + pow(normalVector4.z(), 2));
                
         normalmap_[row  ][0] = (normalVector1);
         normalmap_[row  ][1] = (normalVector2);
@@ -47,9 +47,9 @@ void Heightmap::calc_normals()
             point4 = vec4f(col + 1 * xoffset_, heightmap_[row+1][col+1], row + 1 * zoffset_);
 
             normalVector2 = vec4f(point2 - point1) * (point2 - point3);
-            normalVector2 = normalVector2 * (float)sqrt(pow(normalVector2.x(), 2) + pow(normalVector2.y(), 2) + pow(normalVector2.z(), 2));
+            normalVector2 = normalVector2 / (float)sqrt(pow(normalVector2.x(), 2) + pow(normalVector2.y(), 2) + pow(normalVector2.z(), 2));
             normalVector4 = vec4f(point4 - point2) * (point4 - point3);
-            normalVector4 = normalVector4 * (float)sqrt(pow(normalVector4.x(), 2) + pow(normalVector4.y(), 2) + pow(normalVector4.z(), 2));
+            normalVector4 = normalVector4 / (float)sqrt(pow(normalVector4.x(), 2) + pow(normalVector4.y(), 2) + pow(normalVector4.z(), 2));
         
             normalmap_[row  ][col+1] = (normalVector2);
             normalmap_[row+1][col+1] = (normalVector4);
@@ -172,16 +172,16 @@ void    Heightmap::draw_triangle_mesh_wired()
     {
         for(long unsigned int j = 0; j < heightmap_[i].size(); ++j)
         {
-            glVertex3f(xoffset_ + j, heightmap_[i][j],   zoffset_ + i);
-            glVertex3f(xoffset_ + j, heightmap_[i+1][j], zoffset_ + i+1);
+            glVertex3f(xoffset_ * j, heightmap_[i][j],   zoffset_ * i);
+            glVertex3f(xoffset_ * j, heightmap_[i+1][j], zoffset_ * i+1);
         }
-            glVertex3f(xoffset_ + heightmap_[i].size()-1, 
+            glVertex3f(xoffset_ * heightmap_[i].size()-1, 
                        heightmap_[i+1][heightmap_[i].size()-1], 
-                       zoffset_ + i + 1);
+                       zoffset_ * i + 1);
 
             glVertex3f(xoffset_,  
                        heightmap_[i+1][0], 
-                       zoffset_ + i + 1);
+                       zoffset_ * i + 1);
     }
     glEnd();
 }
@@ -198,12 +198,12 @@ void    Heightmap::draw_triangle_mesh_solid()
     {
         for(long unsigned int j = 0; j < heightmap_[i].size(); ++j)
         {
-            glVertex3f(xoffset_ + j, heightmap_[i][j],   zoffset_ + i);
-            glVertex3f(xoffset_ + j, heightmap_[i+1][j], zoffset_ + i+1);
+            glVertex3f(xoffset_ * j, heightmap_[i][j],   zoffset_ * i);
+            glVertex3f(xoffset_ * j, heightmap_[i+1][j], zoffset_ * i+1);
         }
-            glVertex3f(xoffset_ + heightmap_[i].size()-1, 
+            glVertex3f(xoffset_ * heightmap_[i].size()-1, 
                        heightmap_[i+1][heightmap_[i].size()-1], 
-                       zoffset_ + i + 1);
+                       zoffset_ * i + 1);
 
             glVertex3f(xoffset_,  
                        heightmap_[i+1][0], 
@@ -224,6 +224,7 @@ void Heightmap::print_normalmap()
         }
         std::cout << "|\n";
     }
+    std::cout << '\n';
 }
 
 Heightmap  Heightmap::resize(int n)

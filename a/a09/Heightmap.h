@@ -40,7 +40,8 @@ public:
     {
         std::vector<std::vector<float>> temp(pow(2, n)+1, std::vector<float>(pow(2, n)+1, 0));
         heightmap_ = temp;
-        std::vector<std::vector<vec4f>> tempv(pow(2,n)+1, std::vector<vec4f>(pow(2,n)+1));    
+        std::vector<std::vector<vec4f>> tempv(pow(2,n)+1, std::vector<vec4f>(pow(2,n)+1));
+        normalmap_ = tempv;    
     }
 
     int         n()        const {return n_;}

@@ -6,9 +6,9 @@ class vec4f
 {
 public:
     vec4f()
-    : x_(0), y_(0), z_(0), w_(1)
+    : x_(0), y_(0), z_(0), w_(0)
     {}
-    vec4f(float x, float y, float z, float w = 1)
+    vec4f(float x, float y, float z, float w = 0)
     : x_(x), y_(y), z_(z), w_(w)
     {}
     vec4f & operator=(const vec4f &);

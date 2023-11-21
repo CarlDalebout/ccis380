@@ -37,6 +37,7 @@ void init()
     srand(time(NULL));
     heightmap.Diamond_Square(roughness);
     heightmap.calc_normals();
+    heightmap.print_normalmap();
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClearDepth(1.0f);

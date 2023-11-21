@@ -17,32 +17,43 @@ float Heightmap::get_value(int row, int col, bool & flag)
 
 void Heightmap::calc_normals()
 {
-    for(int row = 0; row < maxRow_-1; row++)
+    for(int row = 0; row < maxRow_; row++)
     {   
-        std::cout << "working on row " << row << " out of " << maxRow_-1 << '\n';
-        for(int col = 0; col < maxCol_-1; col++)
-        {   
-            std::cout << "working on col " << col << " out of " << maxCol_-1 << '\n';
-            vec4f point1(col     * xoffset_, heightmap_[row][col], row     * zoffset_);
-            std::cout << "point1: " << point1;
-            vec4f point2(col + 1 * xoffset_, heightmap_[row][col], row     * zoffset_);
-            std::cout << " point2: " << point2 << '\n';
-            vec4f point3(col     * xoffset_, heightmap_[row][col], row + 1 * zoffset_);
-            std::cout << "point3: " << point3;
-            vec4f point4(col + 1 * xoffset_, heightmap_[row][col], row + 1 * zoffset_);
-            std::cout << " point4: " << point4 << '\n';
-            
-            vec4f normalVector1 = (point1 - point3) * (point1 - point2);
-            normalVector1 = normalVector1 * (float)sqrt(pow(normalVector1.x(), 2) + pow(normalVector1.y(), 2) + pow(normalVector1.z(), 2));
-            std::cout << "normalVector1: " << normalVector1;
-            vec4f normalVector2 =  (point3 - point4) * (point3 - point2);
-            normalVector1 = normalVector2 * (float)sqrt(pow(normalVector2.x(), 2) + pow(normalVector2.y(), 2) + pow(normalVector2.z(), 2));
-            std::cout << " normalVector2: " << normalVector2 << "\n";
+        vec4f point1(0           , heightmap_[row  ][0], row     * zoffset_);
+        vec4f point2(1 * xoffset_, heightmap_[row  ][1], row     * zoffset_);
+        vec4f point3(0           , heightmap_[row+1][0], row + 1 * zoffset_);
+        vec4f point4(1 * xoffset_, heightmap_[row+1][1], row + 1 * zoffset_);
+        
+        /// Set the points connected to the plains to the same normal vector
+        vec4f normalVector1 = (point1 - point3) * (point1 - point2);
+        normalVector1 = normalVector1 * (float)sqrt(pow(normalVector1.x(), 2) + pow(normalVector1.y(), 2) + pow(normalVector1.z(), 2));
+        vec4f normalVector2 = (point2 - point1) * (point2 - point3);
+        normalVector2 = normalVector2 * (float)sqrt(pow(normalVector2.x(), 2) + pow(normalVector2.y(), 2) + pow(normalVector2.z(), 2));
+        vec4f normalVector3 =  (point3 - point4) * (point3 - point2);
+        normalVector3 = normalVector3 * (float)sqrt(pow(normalVector3.x(), 2) + pow(normalVector3.y(), 2) + pow(normalVector3.z(), 2));
+        vec4f normalVector4 =  (point4 - point2) * (point4 - point3);
+        normalVector4 = normalVector4 * (float)sqrt(pow(normalVector4.x(), 2) + pow(normalVector4.y(), 2) + pow(normalVector4.z(), 2));
+               
+        normalmap_[row  ][0] = (normalVector1);
+        normalmap_[row  ][1] = (normalVector2);
+        normalmap_[row+1][0] = (normalVector3);
+        normalmap_[row+1][1] = (normalVector4);
 
-            normalmap_[row][col].operator=(normalVector1);
-            std::cout << "pushed normalvector1 into normal map";
-            normalmap_[row][col+1].operator=(normalVector2);
-        } 
+        for(int col = 1; col < maxCol_; col++)
+        {   
+            point1 = vec4f(col     * xoffset_, heightmap_[row  ][col  ], row     * zoffset_);
+            point2 = vec4f(col + 1 * xoffset_, heightmap_[row  ][col+1], row     * zoffset_);
+            point3 = vec4f(col     * xoffset_, heightmap_[row+1][col  ], row + 1 * zoffset_);
+            point4 = vec4f(col + 1 * xoffset_, heightmap_[row+1][col+1], row + 1 * zoffset_);
+
+            normalVector2 = vec4f(point2 - point1) * (point2 - point3);
+            normalVector2 = normalVector2 * (float)sqrt(pow(normalVector2.x(), 2) + pow(normalVector2.y(), 2) + pow(normalVector2.z(), 2));
+            normalVector4 = vec4f(point4 - point2) * (point4 - point3);
+            normalVector4 = normalVector4 * (float)sqrt(pow(normalVector4.x(), 2) + pow(normalVector4.y(), 2) + pow(normalVector4.z(), 2));
+        
+            normalmap_[row  ][col+1] = (normalVector2);
+            normalmap_[row+1][col+1] = (normalVector4);
+        }  
     }
 }
 

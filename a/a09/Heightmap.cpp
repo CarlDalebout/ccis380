@@ -24,13 +24,16 @@ void Heightmap::calc_normals()
         vec4f point3(0           , heightmap_[row+1][0], row + 1 * zoffset_);
         vec4f point4(1 * xoffset_, heightmap_[row+1][1], row + 1 * zoffset_);
         
-        /// Set the points connected to the plains to the same normal vector
+        // Set the points connected to the plains to the same normal vector
         vec4f normalVector1 = (point1 - point3) * (point1 - point2);
-        normalVector1 = normalVector1 / (float)sqrt(pow(normalVector1.x(), 2) + pow(normalVector1.y(), 2) + pow(normalVector1.z(), 2));
+        normalVector1 = normalVector1 * (float)sqrt(pow(normalVector1.x(), 2) + pow(normalVector1.y(), 2) + pow(normalVector1.z(), 2));
+        
         vec4f normalVector2 = (point2 - point1) * (point2 - point3);
-        normalVector2 = normalVector2 / (float)sqrt(pow(normalVector2.x(), 2) + pow(normalVector2.y(), 2) + pow(normalVector2.z(), 2));
+        normalVector2 = normalVector2 * (float)sqrt(pow(normalVector2.x(), 2) + pow(normalVector2.y(), 2) + pow(normalVector2.z(), 2));
+        
         vec4f normalVector3 =  (point3 - point4) * (point3 - point2);
-        normalVector3 = normalVector3 / (float)sqrt(pow(normalVector3.x(), 2) + pow(normalVector3.y(), 2) + pow(normalVector3.z(), 2));
+        normalVector3 = normalVector3 * (float)sqrt(pow(normalVector3.x(), 2) + pow(normalVector3.y(), 2) + pow(normalVector3.z(), 2));
+        
         vec4f normalVector4 =  (point4 - point2) * (point4 - point3);
         normalVector4 = normalVector4 / (float)sqrt(pow(normalVector4.x(), 2) + pow(normalVector4.y(), 2) + pow(normalVector4.z(), 2));
                
@@ -53,7 +56,7 @@ void Heightmap::calc_normals()
         
             normalmap_[row  ][col+1] = (normalVector2);
             normalmap_[row+1][col+1] = (normalVector4);
-        }  
+        }   
     }
 }
 

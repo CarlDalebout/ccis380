@@ -41,28 +41,6 @@ void draw_red_plastic_sphere(float radius)
     glutSolidSphere(radius, 20, 20);
 }
 
-void draw_triangle_strip()
-{
-    /*
-       p0      p2       p
-        +------+------+------+
-        |     /|     /|     /|
-        |    / |    / |    / |
-        |   /  |   /  |   /  |
-        |  /   |  /   |  /   |
-        | /    | /    | /    |
-        |/     |/     |/     |
-        +------+------+------+
-       p1      p3           p4
-    */
-
-
-    // p0, p1, p2, p3, p4, p5, p6, p7
-    // t0 = p0, p1, p2
-    // t1 = p2, p1, p3
-    // t0 = p3, p4, p5
-}
-
 
 void draw_cube()
 {
@@ -94,11 +72,12 @@ void draw_cube()
     static float p1[] = {1, 1, 1};
     static float p2[] = {1, 0, 1};
     static float p3[] = {0, 0, 1};
-
     static float p4[] = {0, 1, 0};
     static float p5[] = {1, 1, 0};
     static float p6[] = {1, 0, 0};
     static float p7[] = {0, 0, 0};
+
+    // Declare p4, p5, p6, p7
     
     {
         // 2nd run:
@@ -106,59 +85,55 @@ void draw_cube()
         // CCW = counter clockwise
         // CW = clockwise
         glFrontFace(GL_CCW); 
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
 
-        // 3rd run:
-        // Experiment:
-        // - Cull back face using GL_BACK
-        // glEnable(GL_CULL_FACE);
-        // glCullFace(GL_BACK);
-       
-        // 4th run:
-        // Experiment - Cull front face using GL_FRONT
-
-        glBegin(GL_TRIANGLE_STRIP);
+        glBegin(GL_QUADS);
         {
-            // back side of cube
-            glNormal3f(0, 0, -1);
-            glVertex3fv(p4); 
-            glVertex3fv(p7); 
-            glVertex3fv(p5); 
-            glVertex3fv(p6); 
-            glVertex3fv(p6);
-            
-            // 8th run: bottom of cube
-            glNormal3f(0, -1, 0);
-            glVertex3fv(p7); 
-            glVertex3fv(p7); 
-            glVertex3fv(p3); 
-            glVertex3fv(p6); 
-            glVertex3fv(p2);
- 
-            
-            // right side of cube
-            glNormal3f(1, 0, 0);
-            glVertex3fv(p5); 
-            glVertex3fv(p1); 
-            glVertex3fv(p4);
-            
-            // 7th run: top of cube 
-            // glNormal3f(0, 1, 0);
-                        
-            // left side of cube
-            // glNormal3f(-1, 0, 0);
-            
             // front side of cube
             // 5th run:
             // Experiment: try different normal vector
-            // glNormal3f(0, 0, 1); 
-            glVertex3fv(p0); 
-            glVertex3fv(p7); 
+            glNormal3f(0, 0, 1); 
             glVertex3fv(p3); 
-            glVertex3fv(p3);
-            glVertex3fv(p0); 
             glVertex3fv(p2); 
             glVertex3fv(p1); 
+            glVertex3fv(p0);
             
+            // right side of cube
+            glNormal3f(1, 0, 0); 
+            glVertex3fv(p2); 
+            glVertex3fv(p6); 
+            glVertex3fv(p5); 
+            glVertex3fv(p1);
+            
+            // back side of cube
+            glNormal3f(0, 0, -1); 
+            glVertex3fv(p6); 
+            glVertex3fv(p7); 
+            glVertex3fv(p4); 
+            glVertex3fv(p5);
+
+            // left side of cube
+            glNormal3f(-1, 0, 0); 
+            glVertex3fv(p7); 
+            glVertex3fv(p3); 
+            glVertex3fv(p0); 
+            glVertex3fv(p4);
+
+            // 7th run: top of cube 
+            glNormal3f(0, 1, 0); 
+            glVertex3fv(p0); 
+            glVertex3fv(p1); 
+            glVertex3fv(p5); 
+            glVertex3fv(p4);
+
+            // 8th run: bottom of cube
+            glNormal3f(0, -1, 0);
+            glVertex3fv(p7); 
+            glVertex3fv(p6); 
+            glVertex3fv(p2); 
+            glVertex3fv(p3);
+
         }
         glEnd();
         
@@ -198,6 +173,12 @@ void display()
         mygllib::Material mat(mygllib::Material::CYAN_PLASTIC);
         mat.set();
         draw_cube();
+        glPushMatrix();
+        {
+            glTranslatef(light.x(), light.y(), light.z());
+            draw_cube();
+        }
+
     }
     glPopMatrix();
     glutSwapBuffers();

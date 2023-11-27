@@ -39,9 +39,9 @@ public:
     :n_(n), maxRow_(pow(2, n)), maxCol_(pow(2, n)), xoffset_(xoffset), zoffset_(zoffset)
     {
         std::vector<std::vector<float>> temp(pow(2, n)+1, std::vector<float>(pow(2, n)+1, 0));
-        heightmap_ = temp;
-        std::vector<std::vector<vec4f>> tempv(pow(2,n)+1, std::vector<vec4f>(pow(2,n)+1));
-        normalmap_ = tempv;    
+        heightmap_ = temp;    
+        std::vector<std::vector<vec4f>> tempv(pow(2, n), std::vector<vec4f>(pow(2, n+1)));
+        normalmap_ = tempv;
     }
 
     int         n()        const {return n_;}
@@ -56,12 +56,9 @@ public:
     std::vector<std::vector<float>> & heightmap()       {return heightmap_;}
     std::vector<std::vector<float>>   heightmap() const {return heightmap_;}
 
-    std::vector<std::vector<vec4f>> & normalmap()       {return normalmap_;}
-    std::vector<std::vector<vec4f>>   normalmap() const {return normalmap_;}
-
-
     float       get_value(int row, int col, bool & flag);
-    
+    vec4f       get_normal(int row, int col);
+
     void        calc_normals();
     
     void        diamond_step(int width, float M);

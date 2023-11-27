@@ -15,49 +15,75 @@ float Heightmap::get_value(int row, int col, bool & flag)
     return 9999;
 }
 
-void Heightmap::calc_normals()
+vec4f Heightmap::get_normal(int row, int col)
 {
-    for(int row = 0; row < maxRow_; row++)
-    {   
-        vec4f point1(0           , heightmap_[row  ][0], row     * zoffset_);
-        vec4f point2(1 * xoffset_, heightmap_[row  ][1], row     * zoffset_);
-        vec4f point3(0           , heightmap_[row+1][0], row + 1 * zoffset_);
-        vec4f point4(1 * xoffset_, heightmap_[row+1][1], row + 1 * zoffset_);
-        
-        // Set the points connected to the plains to the same normal vector
-        vec4f normalVector1 = (point1 - point3) * (point1 - point2);
-        normalVector1 = normalVector1 * (float)sqrt(pow(normalVector1.x(), 2) + pow(normalVector1.y(), 2) + pow(normalVector1.z(), 2));
-        
-        vec4f normalVector2 = (point2 - point1) * (point2 - point3);
-        normalVector2 = normalVector2 * (float)sqrt(pow(normalVector2.x(), 2) + pow(normalVector2.y(), 2) + pow(normalVector2.z(), 2));
-        
-        vec4f normalVector3 =  (point3 - point4) * (point3 - point2);
-        normalVector3 = normalVector3 * (float)sqrt(pow(normalVector3.x(), 2) + pow(normalVector3.y(), 2) + pow(normalVector3.z(), 2));
-        
-        vec4f normalVector4 =  (point4 - point2) * (point4 - point3);
-        normalVector4 = normalVector4 / (float)sqrt(pow(normalVector4.x(), 2) + pow(normalVector4.y(), 2) + pow(normalVector4.z(), 2));
-               
-        normalmap_[row  ][0] = (normalVector1);
-        normalmap_[row  ][1] = (normalVector2);
-        normalmap_[row+1][0] = (normalVector3);
-        normalmap_[row+1][1] = (normalVector4);
-
-        for(int col = 1; col < maxCol_; col++)
-        {   
-            point1 = vec4f(col     * xoffset_, heightmap_[row  ][col  ], row     * zoffset_);
-            point2 = vec4f(col + 1 * xoffset_, heightmap_[row  ][col+1], row     * zoffset_);
-            point3 = vec4f(col     * xoffset_, heightmap_[row+1][col  ], row + 1 * zoffset_);
-            point4 = vec4f(col + 1 * xoffset_, heightmap_[row+1][col+1], row + 1 * zoffset_);
-
-            normalVector2 = vec4f(point2 - point1) * (point2 - point3);
-            normalVector2 = normalVector2 / (float)sqrt(pow(normalVector2.x(), 2) + pow(normalVector2.y(), 2) + pow(normalVector2.z(), 2));
-            normalVector4 = vec4f(point4 - point2) * (point4 - point3);
-            normalVector4 = normalVector4 / (float)sqrt(pow(normalVector4.x(), 2) + pow(normalVector4.y(), 2) + pow(normalVector4.z(), 2));
-        
-            normalmap_[row  ][col+1] = (normalVector2);
-            normalmap_[row+1][col+1] = (normalVector4);
-        }   
+    if(col % 2 == 0)
+    {
+        vec4f point2(row   * zoffset_, heightmap_[row  ][col+1], col+1 * xoffset_); 
+        vec4f point3(row+1 * zoffset_, heightmap_[row+1][col  ], col   * xoffset_);
+        vec4f point6(row   * zoffset_, heightmap_[row  ][col  ], col  * xoffset_);
+        vec4f normalvec = (point6 - point2) * (point6 - point3);
+        normalvec = normalvec / sqrt(pow(normalvec.x(), 2) + pow(normalvec.y(), 2) + pow(normalvec.z(), 2));
+        return normalvec;
     }
+    else
+    {
+        vec4f point2(row+1 * zoffset_, heightmap_[row+1][col-1], col-1 * xoffset_); 
+        vec4f point3(row+1 * zoffset_, heightmap_[row+1][col  ], col   * xoffset_);
+        vec4f point6(row   * zoffset_, heightmap_[row  ][col  ], col   * xoffset_);
+        vec4f normalvec = (point6 - point3) * (point6 - point2);
+        normalvec = (normalvec / sqrt(pow(normalvec.x(), 2) + pow(normalvec.y(), 2) + pow(normalvec.z(), 2)));
+        return normalvec;
+    }
+    // bool flag[] = {false, false, false, false, false, false};
+
+    // vec4f point0;
+    // vec4f point1;
+    // vec4f point2;
+    // vec4f point3;
+    // vec4f point4;
+    // vec4f point5;
+
+    // //check point up
+    // if(row-1 > 0 && col   <= maxCol_)
+    //     point0 = vec4f(row-1 * zoffset_, heightmap_[row-1][col  ], col   * xoffset_); flag[0] = true;
+    
+    // //check point up and right
+    // if(row-1 > 0 && col+1 <= maxCol_)
+    //     point1 = vec4f(row-1 * zoffset_, heightmap_[row-1][col+1], col+1 * xoffset_); flag[1] = true;
+
+    // //check point right
+    // if(col+1 <= maxCol_)
+    //     point2 = vec4f(row   * zoffset_, heightmap_[row  ][col+1], col+1 * xoffset_); flag[2] = true;
+
+    // //check point down
+    // if(row+1 <= maxRow_)
+    //     point3 = vec4f(row+1 * zoffset_, heightmap_[row+1][col  ], col   * xoffset_); flag[3] = true;
+
+    // //check point down and left
+    // if(row+1 <= maxRow_ && col-1 > 0)
+    //     point4 = vec4f(row+1 * zoffset_, heightmap_[row+1][col-1], col-1 * xoffset_); flag[4] = true;
+
+    // //check point left
+    // if(col-1 > 0)
+    //     point5 = vec4f(row   * zoffset_, heightmap_[row  ][col-1], col-1 * xoffset_); flag[5] = true;
+
+    // vec4f point6(row   * zoffset_, heightmap_[row  ][col  ], col  * xoffset_); 
+
+    // if(row == 0)
+    // {
+    //     if(col == 0)
+    //     {
+    //         vec4f normalvec = (point6 - point3) * (point6 - point2);
+    //         normalvec = normalvec / sqrt(pow(normalvec.x(), 2) + pow(normalvec.y(), 2) + pow(normalvec.z(), 2));
+    //         return normalvec;
+    //     }
+    //     else if(col == maxCol_)
+    //     {
+
+    //     }
+    // }
+    return vec4f(0, 1, 0);
 }
 
 void Heightmap::diamond_step(int width, float M)
@@ -165,26 +191,30 @@ void    Heightmap::draw_triangle_mesh_wired()
         +------+------+------+
        p10      p9     p10    p11
     */
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT, GL_LINE);
     // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glFrontFace(GL_CW);
     glBegin(GL_TRIANGLE_STRIP);
-    for(long unsigned int i = 0; i < heightmap_.size()-1; ++i)
     {
-        for(long unsigned int j = 0; j < heightmap_[i].size(); ++j)
+        for(long unsigned int row = 0; row < heightmap_.size()-1; row++)
         {
-            glVertex3f(xoffset_ * j, heightmap_[i][j],   zoffset_ * i);
-            glVertex3f(xoffset_ * j, heightmap_[i+1][j], zoffset_ * i+1);
+            glVertex3f(0, heightmap_[row][0], (row * zoffset_));
+            glVertex3f(0, heightmap_[row][0], (row * zoffset_));
+            for(long unsigned int col = 0; col < heightmap_[row].size()-1; col++)
+            {
+                glVertex3f(col   * xoffset_, heightmap_[row+1][col  ], row+1 * zoffset_);
+                if(col+1 == heightmap_[row].size())
+                {
+                    glVertex3f(col   * xoffset_, heightmap_[row+1][col  ], row+1 * zoffset_);
+                    break;
+                }
+                glVertex3f(col+1 * xoffset_, heightmap_[row  ][col+1], row  * zoffset_);
+            }
+            glVertex3f(heightmap_[row].size()-1 * xoffset_, heightmap_[row+1][heightmap_[row].size()-1], row+1 * zoffset_);
+            glVertex3f(heightmap_[row].size()-1 * xoffset_, heightmap_[row+1][heightmap_[row].size()-1], row+1 * zoffset_);
         }
-            glVertex3f(xoffset_ * heightmap_[i].size()-1, 
-                       heightmap_[i+1][heightmap_[i].size()-1], 
-                       zoffset_ * i + 1);
-
-            glVertex3f(xoffset_,  
-                       heightmap_[i+1][0], 
-                       zoffset_ * i + 1);
     }
     glEnd();
 }
@@ -192,42 +222,35 @@ void    Heightmap::draw_triangle_mesh_wired()
 void    Heightmap::draw_triangle_mesh_solid()
 {
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glPolygonMode(GL_FRONT, GL_FILL);
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glFrontFace(GL_CW);
     glBegin(GL_TRIANGLE_STRIP);
-    for(long unsigned int i = 0; i < heightmap_.size()-1; ++i)
     {
-        for(long unsigned int j = 0; j < heightmap_[i].size(); ++j)
+        for(long unsigned int row = 0; row < heightmap_.size()-1; row++)
         {
-            glVertex3f(xoffset_ * j, heightmap_[i][j],   zoffset_ * i);
-            glVertex3f(xoffset_ * j, heightmap_[i+1][j], zoffset_ * i+1);
+            glVertex3f(0, heightmap_[row][0], (row * zoffset_));
+            glVertex3f(0, heightmap_[row][0], (row * zoffset_));
+            for(long unsigned int col = 0; col < heightmap_[row].size()-1; col++)
+            {
+                vec4f normv = get_normal(row, col);
+                float color = (heightmap_[row+1][col] + 50) / 100;
+                glColor3f(0.9f * color, 0.9f * color, 0.9f * color);
+                glNormal3f(normv.x(), normv.y(), normv.z());
+                glVertex3f(col   * xoffset_, heightmap_[row+1][col  ], row+1 * zoffset_);
+                if(col+1 == heightmap_[row].size())
+                {
+                    glVertex3f(col   * xoffset_, heightmap_[row+1][col  ], row+1 * zoffset_);
+                    break;
+                }
+                glVertex3f(col+1 * xoffset_, heightmap_[row  ][col+1], row  * zoffset_);
+            }
+            glVertex3f(heightmap_[row].size()-1 * xoffset_, heightmap_[row+1][heightmap_[row].size()-1], row+1 * zoffset_);
+            glVertex3f(heightmap_[row].size()-1 * xoffset_, heightmap_[row+1][heightmap_[row].size()-1], row+1 * zoffset_);
         }
-            glVertex3f(xoffset_ * heightmap_[i].size()-1, 
-                       heightmap_[i+1][heightmap_[i].size()-1], 
-                       zoffset_ * i + 1);
-
-            glVertex3f(xoffset_,  
-                       heightmap_[i+1][0], 
-                       zoffset_ + i + 1);
     }
     glEnd();
-}
-
-void Heightmap::print_normalmap()
-{
-    for(long unsigned int i = 0; i < normalmap_.size(); ++i)
-    {
-        std::string dir = "";
-        std::cout << "|";
-        for(long unsigned int j = 0; j < normalmap_[i].size(); ++j)
-        {
-            std::cout << dir << std::setw(9) << normalmap_[i][j]; dir = ", ";
-        }
-        std::cout << "|\n";
-    }
-    std::cout << '\n';
 }
 
 Heightmap  Heightmap::resize(int n)

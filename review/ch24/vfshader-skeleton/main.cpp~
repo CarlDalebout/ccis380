@@ -1,0 +1,76 @@
+/*
+  Goal: test VBOs
+ */
+
+#include <iostream>
+#include <GL/freeglut.h>
+#include "gl2d.h"
+#include "material.h"
+#include <cmath>
+
+
+GLuint vbo;
+
+void init()
+{
+  GLfloat point[] = {0.0, 0.0, 1.0,
+		     100.0, 0.0, 1.0,
+		     100.0, 100.0, 1.0};
+  GLfloat color[] = {1.0, 0.0, 0.0,
+		     0.0, 1.0, 0.0, 
+		     0.0, 0.0, 1.0};
+
+  // Set vbo to the id of a valid VBO
+  glGenBuffers(1, &vbo);
+  std::cout << "glGenBuffers ... glGetError(): " << glGetError() << std::endl;
+  std::cout << "vbo: " << vbo << std::endl;
+
+  // Bind the VBO, i.e., select the VBO with id vbo
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  std::cout << "glBindBuffer ... glGetError(): " << glGetError() << std::endl;
+  std::cout << "vbo: " << vbo << std::endl;
+
+  // Copy point array data to OpenGL
+  glBufferData(GL_ARRAY_BUFFER_ARB,
+	       sizeof(point), point,
+	       GL_STATIC_DRAW);
+  std::cout << "glBufferData ... glGetError(): " << glGetError() << std::endl;
+  
+  glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
+
+  // Vertex array, point, now can do out of scope. If point is a pointer,
+  // you can "delete [] p;".
+}
+
+
+void display()
+{    
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  glEnableVertexAttribArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  glVertexAttribPointer(0,        // Must match the layout in the shader.
+			3,        // size
+			GL_FLOAT, // type
+			GL_FALSE, // normalized?
+			0,        // stride
+			(void*)0  // array buffer offset
+			);
+  glColor3f(1.0f, 0.0f, 0.0f); // red
+  glDrawArrays(GL_TRIANGLES, 0, 3);
+  glDisableVertexAttribArray(0);
+  glFlush();
+}
+
+
+int main(int argc, char ** argv)
+{
+    mygllib::init2d();
+    init();
+
+    glutDisplayFunc(display);
+
+    glutMainLoop();
+    
+    return 0;
+}

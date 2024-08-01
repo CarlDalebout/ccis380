@@ -61,10 +61,6 @@ void init()
     glEnable(GL_NORMALIZE);
 }
 
-
-
-
-
 float base_y_axis = 0;
 float base_z_axis = 0;
 

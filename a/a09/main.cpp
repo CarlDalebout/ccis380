@@ -1,5 +1,6 @@
+
+
 #include <cmath>
-#include <iostream>
 #include <list>
 #include <GL/freeglut.h>
 #include <time.h>

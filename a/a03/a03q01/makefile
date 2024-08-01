@@ -4,14 +4,14 @@
 #------------------------------------------------------------------------------
 # Macros
 #------------------------------------------------------------------------------
-CXX 		= g++
+CXX 			= g++
 CXXFLAGS 	= -g -Wall
-LINK 		= g++
-LINKFLAGS 	= -lGL -lGLU -lglut -lGLEW
-OBJS 		= ../../mygllib/config.o \
-			../../mygllib/View.o \
-			main.o
-EXE 		= main.exe
+LINK 			= g++
+LINKFLAGS = -lGL -lGLU -lglut -lGLEW
+OBJS 			= ../../mygllib/config.o \
+						../../mygllib/View.o \
+						main.o
+EXE 			= main.exe
 #------------------------------------------------------------------------------
 # Executable
 #------------------------------------------------------------------------------

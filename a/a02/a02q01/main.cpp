@@ -1,5 +1,5 @@
 #include <GL/freeglut.h>
-#include "../mygllib/gl2d.h"
+#include "../../mygllib/gl2d.h"
 #include <vector>
 
 int level = 0;
